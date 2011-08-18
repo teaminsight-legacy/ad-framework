@@ -2,12 +2,23 @@ module AD
   module Framework
 
     class AttributeType
-      attr_accessor :object, :attr_name, :value
+      attr_accessor :object, :attr_ldap_name, :value, :ldap_value
 
-      def initialize(object, attr_name, value)
+      def initialize(object, attr_ldap_name, value)
         self.object = object
-        self.attr_name = attr_name
+        self.attr_ldap_name = attr_ldap_name
         self.value = value
+      end
+      
+      def value=(new_value)
+        @value = new_value
+        self.ldap_value = @value
+        @value
+      end
+      
+      def ldap_value=(new_ldap_value)
+        self.object.fields[self.attr_ldap_name] = [*new_ldap_value].collect(&:to_s)
+        @ldap_value = new_ldap_value
       end
 
       class << self
@@ -27,7 +38,7 @@ module AD
               def #{attribute_type_method}
                 unless @#{attribute_type_method}
                   value = (self.fields["#{attribute.ldap_name}"] || []).first
-                  type = #{attribute.attribute_type}.new(self, "#{attribute.name}", value)
+                  type = #{attribute.attribute_type}.new(self, "#{attribute.ldap_name}", value)
                   @#{attribute_type_method} = type
                 end
                 @#{attribute_type_method}

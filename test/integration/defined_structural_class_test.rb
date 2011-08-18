@@ -47,8 +47,13 @@ class DefinedStructuralClassTest < Assert::Context
     desc "instance"
     setup do
       @name = "joe test"
+      @system_flags = 123456789
+      @display_name = "Joe Test"
+      @description = "A relevant description."
       @dn = [ "DN=#{@name}", @structural_class.treebase ].join(", ")
-      @top = @structural_class.new({ :name => @name })
+      @top = @structural_class.new({ :name => @name, :system_flags => @system_flags, 
+        :display_name => @display_name, :description => @description 
+      })
     end
     subject{ @top }
     
@@ -56,7 +61,23 @@ class DefinedStructuralClassTest < Assert::Context
     should have_accessors :name, :system_flags, :display_name, :description
     
     should "return it's rdn with its treebase in it's dn" do
-      assert_equal(@dn, subject.dn)
+      assert_equal @dn, subject.dn
+    end
+    should "return the name set on it" do
+      assert_equal @name, subject.name
+      assert_equal [ @name ], subject.fields[:name]
+    end
+    should "return the system_flags set on it" do
+      assert_equal @system_flags, subject.system_flags
+      assert_equal [ @system_flags.to_s ], subject.fields[:systemflags]
+    end
+    should "return the display_name set on it" do
+      assert_equal @display_name, subject.display_name
+      assert_equal [ @display_name ], subject.fields[:displayname]
+    end
+    should "return the description set on it" do
+      assert_equal @description, subject.description
+      assert_equal [ @description ], subject.fields[:description]
     end
   end
 

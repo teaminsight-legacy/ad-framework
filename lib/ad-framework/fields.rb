@@ -9,6 +9,13 @@ module AD
           self[ldap_name.to_s] = value
         end
       end
+      
+      def [](lookup)
+        super(lookup.to_s)
+      end
+      def []=(lookup, object)
+        super(lookup.to_s, object)
+      end
 
       def build_entry
         name = self["objectclass"].last
