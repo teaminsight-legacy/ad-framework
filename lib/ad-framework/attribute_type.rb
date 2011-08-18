@@ -19,7 +19,7 @@ module AD
           end
           @key
         end
-        
+
         def define_attribute_type(attribute, klass)
           attribute_type_method = "#{attribute.name}_attribute_type"
           if !klass.instance_methods.collect(&:to_s).include?(attribute_type_method)
@@ -55,7 +55,11 @@ module AD
 
             def #{attribute.name}=(new_value)
               self.#{attribute.name}_attribute_type = new_value
-              self.#{attribute.name}
+              if self.respond_to?("#{attribute.name}")
+                self.#{attribute.name}
+              else
+                new_value
+              end
             end
 
           DEFINE_WRITER
