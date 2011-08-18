@@ -24,7 +24,7 @@ module AD
           
           def dn
             [ "DN=#{self.send(self.schema.rdn)}",
-              self.send(self.schema.treebase)
+              self.schema.treebase
             ].join(", ")
           end
 
@@ -52,6 +52,11 @@ module AD
           def ldap_name(name = nil)
             (self.schema.ldap_name = name) if name
             self.schema.ldap_name
+          end
+          
+          def treebase(value = nil)
+            (self.schema.treebase = value) if value
+            self.schema.treebase
           end
 
           def rdn(name = nil)

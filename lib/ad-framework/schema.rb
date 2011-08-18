@@ -10,7 +10,20 @@ module AD
       def initialize(klass)
         self.klass = klass
         
+        self.rdn = :name
         self.attributes = Set.new
+      end
+      
+      def treebase
+        if @treebase && self.default_treebase && !(@treebase.include?(self.default_treebase))
+          [ @treebase, self.default_treebase ].join(", ")
+        else
+          (@treebase || self.default_treebase)
+        end
+      end
+      
+      def treebase=(new_value)
+        @treebase = new_value
       end
 
       def add_attributes(attribute_names)
@@ -36,6 +49,12 @@ module AD
           "#{attr}: #{self.send(attr).inspect}"
         end
         [ "#<#{self.class} ", attrs_display.join(", "), ">" ].join
+      end
+
+      protected
+      
+      def default_treebase
+        AD::Framework.config.treebase
       end
 
     end

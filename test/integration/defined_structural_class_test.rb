@@ -21,6 +21,7 @@ class DefinedStructuralClassTest < Assert::Context
     setup do
       @ldap_name = "top"
       @rdn = :name
+      @treebase = [ "OU=Stuff", AD::Framework.config.treebase ].join(", ")
       @attrs = [ :name, :system_flags, :display_name, :description ]
       @schema = @structural_class.schema
     end
@@ -32,6 +33,9 @@ class DefinedStructuralClassTest < Assert::Context
     should "store the rdn defined on the class" do
       assert_equal @rdn, subject.rdn
     end
+    should "store the treebase defined on the class" do
+      assert_equal @treebase, subject.treebase
+    end
     should "contain all the attributes defined on the class" do
       @attrs.each do |attr|
         assert_includes attr, subject.attributes
@@ -42,12 +46,18 @@ class DefinedStructuralClassTest < Assert::Context
   class InstanceTest < TopTest
     desc "instance"
     setup do
-      @top = @structural_class.new
+      @name = "joe test"
+      @dn = [ "DN=#{@name}", @structural_class.treebase ].join(", ")
+      @top = @structural_class.new({ :name => @name })
     end
     subject{ @top }
     
     should have_readers :dn
     should have_accessors :name, :system_flags, :display_name, :description
+    
+    should "return it's rdn with its treebase in it's dn" do
+      assert_equal(@dn, subject.dn)
+    end
   end
 
 end

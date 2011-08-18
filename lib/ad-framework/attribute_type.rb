@@ -2,16 +2,15 @@ module AD
   module Framework
 
     class AttributeType
+      attr_accessor :object, :attr_name, :value
+      
+      def initialize(object, attr_name, value)
+        self.object = object
+        self.attr_name = attr_name
+        self.value = value
+      end
 
       class << self
-
-        def inherited(klass)
-          AD::Framework::AttributeType.inherited_attribute_types.push(klass)
-        end
-
-        def inherited_attribute_types
-          @inherited_attribute_types ||= []
-        end
 
         def key(new_value = nil)
           if new_value
@@ -28,7 +27,7 @@ module AD
               def #{attribute_type_method}
                 unless @#{attribute_type_method}
                   value = (self.fields["#{attribute.ldap_name}"] || []).first
-                  type = #{attribute.attribute_type}.new(self, #{attribute.name}, value)
+                  type = #{attribute.attribute_type}.new(self, "#{attribute.name}", value)
                   @#{attribute_type_method} = type
                 end
                 @#{attribute_type_method}
@@ -54,7 +53,7 @@ module AD
           klass.class_eval <<-DEFINE_WRITER
 
             def #{attribute.name}=(new_value)
-              self.#{attribute.name}_attribute_type = new_value
+              self.#{attribute.name}_attribute_type.value = new_value
               self.#{attribute.name}
             end
 
