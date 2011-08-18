@@ -3,7 +3,7 @@ module AD
 
     class AttributeType
       attr_accessor :object, :attr_name, :value
-      
+
       def initialize(object, attr_name, value)
         self.object = object
         self.attr_name = attr_name
@@ -18,7 +18,7 @@ module AD
           end
           @key
         end
-        
+
         def define_attribute_type(attribute, klass)
           attribute_type_method = "#{attribute.name}_attribute_type"
           if !klass.instance_methods.collect(&:to_s).include?(attribute_type_method)
@@ -54,7 +54,11 @@ module AD
 
             def #{attribute.name}=(new_value)
               self.#{attribute.name}_attribute_type.value = new_value
-              self.#{attribute.name}
+              if self.respond_to?("#{attribute.name}")
+                self.#{attribute.name}
+              else
+                new_value
+              end
             end
 
           DEFINE_WRITER

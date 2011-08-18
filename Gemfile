@@ -4,4 +4,4 @@ source "http://rubygems.org"
 gemspec
 
 gem 'rake', "~>0.9.2"
-gem "ad-ldap", :path => "~/Projects/work/gems/ad-ldap"
+gem "ad-ldap", :git => "git@github.com:teaminsight/ad-ldap.git", :branch => "master"
