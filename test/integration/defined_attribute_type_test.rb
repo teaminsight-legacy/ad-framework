@@ -1,4 +1,5 @@
 require 'assert'
+require 'test/integration_helper'
 
 class DefinedAttributeTypeTest < Assert::Context
   desc "the defined attribute type"

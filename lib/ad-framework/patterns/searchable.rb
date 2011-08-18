@@ -16,7 +16,7 @@ module AD
         module ClassMethods
 
           def find(dn)
-            if !dn.include?(self.treebase)
+            if dn !~ /DC=|CN=/
               dn = [ "CN=#{dn}", self.treebase ].compact.join(", ")
             end
             args = { :dn__eq => dn, :size => 1 }

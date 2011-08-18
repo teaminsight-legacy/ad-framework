@@ -1,4 +1,5 @@
 require 'assert'
+require 'test/integration_helper'
 
 class DefinedStructuralClassTest < Assert::Context
   desc "the defined structural class"
@@ -42,7 +43,7 @@ class DefinedStructuralClassTest < Assert::Context
       end
     end
   end
-  
+
   class InstanceTest < TopTest
     desc "instance"
     setup do
@@ -51,15 +52,15 @@ class DefinedStructuralClassTest < Assert::Context
       @display_name = "Joe Test"
       @description = "A relevant description."
       @dn = [ "CN=#{@name}", @structural_class.treebase ].join(", ")
-      @top = @structural_class.new({ :name => @name, :system_flags => @system_flags, 
-        :display_name => @display_name, :description => @description 
+      @top = @structural_class.new({ :name => @name, :system_flags => @system_flags,
+        :display_name => @display_name, :description => @description
       })
     end
     subject{ @top }
-    
+
     should have_readers :dn
     should have_accessors :name, :system_flags, :display_name, :description
-    
+
     should "return it's rdn with its treebase in it's dn" do
       assert_equal @dn, subject.dn
     end
@@ -80,7 +81,7 @@ class DefinedStructuralClassTest < Assert::Context
       assert_equal [ @description ], subject.fields[:description]
     end
   end
-  
+
   class UserTest < DefinedStructuralClassTest
     desc "user"
     setup do
@@ -88,19 +89,16 @@ class DefinedStructuralClassTest < Assert::Context
     end
     subject{ @structural_class }
   end
-  
+
   class SearchingTest < UserTest
     desc "searching for an entry"
     setup do
       @user = @structural_class.find("joe test")
     end
     subject{ @user }
-    
+
     should "find the user" do
       assert subject
-    end
-    should "return the name set on it" do
-      assert_equal "joe test", subject.name
     end
   end
 
