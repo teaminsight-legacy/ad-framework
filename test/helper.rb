@@ -1,3 +1,5 @@
+require 'log4r'
+
 # add the current gem root path to the LOAD_PATH
 root_path = File.expand_path("../..", __FILE__)
 if !$LOAD_PATH.include?(root_path)
@@ -10,27 +12,24 @@ require 'test/support/attributes'
 require 'test/support/attribute_types'
 require 'test/support/structural_class'
 
+ldap_config = YAML.load(File.open(File.join(root_path, "private", "ldap.yml")))
 
+logger = Log4r::Logger.new("AD::Framework")
+logger.add(Log4r::FileOutputter.new('fileOutputter', {
+  :filename => File.join(root_path, "log", "test.log"),
+  :trunc => false,
+  :formatter => Log4r::PatternFormatter.new(:pattern => "[%l] %d :: %m")
+}))
 
 AD::Framework.configure do |config|
   config.ldap do |ldap|
-    
+    ldap.host = ldap_config[:host]
+    ldap.port = ldap_config[:port]
+    ldap.encryption = ldap_config[:encryption]
+    ldap.auth = ldap_config[:auth]
   end
-  config.treebase = "DC=example, DC=com"
-end
-
-=begin
-@module.configure do |config|
-  config.ldap do |ldap|
-    ldap.host = host
-    ldap.port = port
-    ldap.encryption = encryption
-    ldap.auth = auth
-  end
+  config.treebase = ldap_config[:base]
   config.logger = logger
-  config.search_size_supported = search_size
-  config.mappings = mappings
-  config.run_commands = run_commands
-  config.treebase = treebase
+  config.search_size_supported = false
+  config.run_commands = false
 end
-=end

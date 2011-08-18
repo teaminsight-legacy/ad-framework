@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   #s.add_runtime_dependency "ad-ldap"
-  
-  s.add_development_dependency "assert", "=0.2.0"
+
+  s.add_development_dependency "assert",  "=0.2.0"
+  s.add_development_dependency "log4r",   "~>1.1.9"
 end
