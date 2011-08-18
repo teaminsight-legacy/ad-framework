@@ -9,6 +9,8 @@ module AD
 
       def initialize(klass)
         self.klass = klass
+        
+        self.attributes = Set.new
       end
 
       def add_attributes(attribute_names)
@@ -19,6 +21,7 @@ module AD
       def add_read_attributes(attribute_names)
         attribute_names.collect(&:to_sym).each do |name|
           AD::Framework::Attribute.new(name).define_reader(self.klass)
+          self.attributes << name.to_sym
         end
       end
 
@@ -29,7 +32,9 @@ module AD
       end
 
       def inspect
-        attrs_display = [ "klass: #{self.klass.inspect}", "ldap_name: #{ldap_name.inspect}" ]
+        attrs_display = [ :klass, :ldap_name, :rdn, :attributes ].collect do |attr|
+          "#{attr}: #{self.send(attr).inspect}"
+        end
         [ "#<#{self.class} ", attrs_display.join(", "), ">" ].join
       end
 

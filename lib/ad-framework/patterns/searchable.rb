@@ -7,7 +7,7 @@ module AD
 
           def included(klass)
             klass.class_eval do
-              extend ActiveDirectory::Patterns::Searchable::ClassMethods
+              extend AD::Framework::Patterns::Searchable::ClassMethods
             end
           end
 
@@ -18,7 +18,7 @@ module AD
           def find(dn)
             args = { :dn__eq => dn, :size => 1 }
             ldap_entry = self.connection.search(args).first
-            fields = ActiveDirectory::Entry::Fields.new(ldap_entry)
+            fields = AD::Framework::Fields.new(ldap_entry)
             fields.build_entry
           end
 
