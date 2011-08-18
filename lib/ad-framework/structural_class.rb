@@ -17,25 +17,24 @@ module AD
         self.attributes = attributes
         self.errors = {}
       end
-      
+
       def connection
         self.class.connection
       end
 
       def inspect
-        # attr_display = self.schema.attribute_needs[:read].collect do |name|
-        #   "#{name}: #{self.send(name).inspect}"
-        # end
-        # [ "#<#{self.class} ", attr_display.join(", "), ">" ].join
-        self.class.to_s
+        (attr_display = self.attributes.collect do |(name, value)|
+          "#{name}: #{value.inspect}"
+        end).sort
+        [ "#<#{self.class} ", attr_display.join(", "), ">" ].join
       end
-      
+
       class << self
-        
+
         def connection
           AD::Framework.connection
         end
-        
+
       end
 
     end

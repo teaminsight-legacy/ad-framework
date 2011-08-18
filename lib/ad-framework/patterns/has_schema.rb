@@ -29,8 +29,8 @@ module AD
           end
 
           def attributes
-            self.schema.attributes.inject({}) do |attrs, attribute|
-              attrs.merge({ attribute.to_sym => self.send(attribute.to_sym) })
+            self.schema.attributes.inject({}) do |attrs, name|
+              attrs.merge({ name.to_sym => self.send(name.to_sym) })
             end
           end
           def attributes=(new_attributes)

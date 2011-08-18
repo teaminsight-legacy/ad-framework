@@ -93,7 +93,7 @@ class DefinedStructuralClassTest < Assert::Context
   class SearchingTest < UserTest
     desc "searching for an entry"
     setup do
-      @user = @structural_class.find("joe test")
+      @user = @structural_class.find("CN=colin redding,CN=Users,DC=reelfx,DC=com")
     end
     subject{ @user }
 

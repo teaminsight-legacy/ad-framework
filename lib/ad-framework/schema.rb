@@ -11,7 +11,11 @@ module AD
         self.klass = klass
         
         self.rdn = :name
-        self.attributes = Set.new
+        if self.klass.superclass.respond_to?(:schema)
+          self.attributes = self.klass.superclass.schema.attributes
+        else
+          self.attributes = Set.new
+        end
       end
       
       def treebase
