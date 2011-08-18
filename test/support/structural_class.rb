@@ -10,3 +10,14 @@ module AD
   end
 end
 AD::Framework.register_structural_class(AD::Top)
+
+module AD
+  class User < AD::Top
+   
+    ldap_name "user"
+    treebase "CN=users"
+    rdn :name
+   
+  end
+end
+AD::Framework.register_structural_class(AD::User)

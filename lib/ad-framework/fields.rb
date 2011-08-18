@@ -5,7 +5,7 @@ module AD
 
       def initialize(ldap_entry)
         super()
-        ldap_entry.each do |ldap_name, value|
+        (ldap_entry || {}).each do |ldap_name, value|
           self[ldap_name.to_s] = value
         end
       end
@@ -18,12 +18,14 @@ module AD
       end
 
       def build_entry
-        name = self["objectclass"].last
-        object_class = ActiveDirectory.config.object_classes[name]
-        if !object_class
-          raise(ActiveDirectory::NoObjectClassError, "An object class with the name #{name} is not defined")
+        if self["objectclass"]
+          name = self["objectclass"].last
+          object_class = ActiveDirectory.config.object_classes[name]
+          if !object_class
+            raise(ActiveDirectory::NoObjectClassError, "An object class with the name #{name} is not defined")
+          end
+          object_class.new({ :fields => self })
         end
-        object_class.new({ :fields => self })
       end
 
       def inspect

@@ -80,5 +80,28 @@ class DefinedStructuralClassTest < Assert::Context
       assert_equal [ @description ], subject.fields[:description]
     end
   end
+  
+  class UserTest < DefinedStructuralClassTest
+    desc "user"
+    setup do
+      @structural_class = AD::User
+    end
+    subject{ @structural_class }
+  end
+  
+  class SearchingTest < UserTest
+    desc "searching for an entry"
+    setup do
+      @user = @structural_class.find("joe test")
+    end
+    subject{ @user }
+    
+    should "find the user" do
+      assert subject
+    end
+    should "return the name set on it" do
+      assert_equal "joe test", subject.name
+    end
+  end
 
 end
