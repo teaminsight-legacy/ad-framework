@@ -1,3 +1,4 @@
+require 'ad-framework/fields'
 require 'ad-framework/patterns/has_schema'
 require 'ad-framework/patterns/searchable'
 
@@ -11,7 +12,7 @@ module AD
       attr_accessor :meta_class, :errors, :fields
 
       def initialize(attributes = {})
-        self.fields = (attributes.delete(:fields) || AD::Framework::Fields.new)
+        self.fields = AD::Framework::Fields.new(attributes.delete(:fields) || {})
 
         self.attributes = attributes
         self.errors = {}

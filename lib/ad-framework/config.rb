@@ -32,7 +32,7 @@ module AD
         self.adapter.config.logger = new_logger
       end
 
-      [ :search_size_supported, :mappings, :run_commands ].each do |method|
+      [ :search_size_supported, :mappings, :run_commands, :treebase ].each do |method|
 
         define_method(method) do
           self.adapter.config.send(method)

@@ -21,6 +21,12 @@ module AD
           def schema
             self.class.schema
           end
+          
+          def dn
+            [ "DN=#{self.send(self.schema.rdn)}",
+              self.send(self.schema.treebase)
+            ].join(", ")
+          end
 
           def attributes
             self.schema.attributes.inject({}) do |attrs, attribute|

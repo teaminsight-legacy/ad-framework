@@ -38,5 +38,16 @@ class DefinedStructuralClassTest < Assert::Context
       end
     end
   end
+  
+  class InstanceTest < TopTest
+    desc "instance"
+    setup do
+      @top = @structural_class.new
+    end
+    subject{ @top }
+    
+    should have_readers :dn
+    should have_accessors :name, :system_flags, :display_name, :description
+  end
 
 end

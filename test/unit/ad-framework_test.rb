@@ -31,6 +31,7 @@ module AD::Framework
       search_size = @search_size = false
       mappings = @mappings = { :dn => "distinguishedname" }
       run_commands = @run_commands = false
+      treebase = @treebase = "DC=example, DC=com"
       @module.configure do |config|
         config.ldap do |ldap|
           ldap.host = host
@@ -42,6 +43,7 @@ module AD::Framework
         config.search_size_supported = search_size
         config.mappings = mappings
         config.run_commands = run_commands
+        config.treebase = treebase
       end
     end
     subject{ @module.config }
@@ -62,6 +64,7 @@ module AD::Framework
       assert_equal @search_size, subject.search_size_supported
       assert_equal @mappings, subject.mappings
       assert_equal @run_commands, subject.run_commands
+      assert_equal @treebase, subject.treebase
     end
 
   end
