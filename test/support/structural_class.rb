@@ -15,7 +15,7 @@ module AD
   class User < AD::Top
    
     ldap_name "user"
-    treebase "CN=users"
+    treebase "CN=Users"
     rdn :name
    
   end

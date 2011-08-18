@@ -11,6 +11,7 @@ module AD
 
       def initialize
         self.mappings = AD::Framework::Config::Mapping.new
+        self.mappings.add(:dn, "distinguishedname")
 
         self.attributes = AD::Framework::Config::Mapping.new
         self.attribute_types = AD::Framework::Config::Mapping.new

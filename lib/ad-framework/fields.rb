@@ -9,7 +9,7 @@ module AD
           self[ldap_name.to_s] = value
         end
       end
-      
+
       def [](lookup)
         super(lookup.to_s)
       end
@@ -20,11 +20,14 @@ module AD
       def build_entry
         if self["objectclass"]
           name = self["objectclass"].last
-          object_class = ActiveDirectory.config.object_classes[name]
-          if !object_class
-            raise(ActiveDirectory::NoObjectClassError, "An object class with the name #{name} is not defined")
+          structural_class = AD::Framework.defined_structural_classes[name]
+          if !structural_class
+            raise(*[
+              AD::Framework::StructuralClassNotDefined,
+              "A structural class with the name #{name.inspect} is not defined"
+            ])
           end
-          object_class.new({ :fields => self })
+          structural_class.new({ :fields => self })
         end
       end
 

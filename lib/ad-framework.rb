@@ -37,6 +37,9 @@ module AD
         self.config.add_attribute_type(attribute_type)
       end
 
+      def defined_structural_classes
+        self.config.structural_classes
+      end
       def register_structural_class(structural_class)
         self.config.add_structural_class(structural_class)
       end

@@ -23,7 +23,7 @@ module AD
           end
           
           def dn
-            [ "DN=#{self.send(self.schema.rdn)}",
+            [ "CN=#{self.send(self.schema.rdn)}",
               self.schema.treebase
             ].join(", ")
           end

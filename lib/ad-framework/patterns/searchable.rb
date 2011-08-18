@@ -16,6 +16,9 @@ module AD
         module ClassMethods
 
           def find(dn)
+            if !dn.include?(self.treebase)
+              dn = [ "CN=#{dn}", self.treebase ].compact.join(", ")
+            end
             args = { :dn__eq => dn, :size => 1 }
             ldap_entry = self.connection.search(args).first
             fields = AD::Framework::Fields.new(ldap_entry)

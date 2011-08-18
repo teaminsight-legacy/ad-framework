@@ -50,7 +50,7 @@ class DefinedStructuralClassTest < Assert::Context
       @system_flags = 123456789
       @display_name = "Joe Test"
       @description = "A relevant description."
-      @dn = [ "DN=#{@name}", @structural_class.treebase ].join(", ")
+      @dn = [ "CN=#{@name}", @structural_class.treebase ].join(", ")
       @top = @structural_class.new({ :name => @name, :system_flags => @system_flags, 
         :display_name => @display_name, :description => @description 
       })
