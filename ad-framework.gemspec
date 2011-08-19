@@ -5,11 +5,10 @@ require "ad-framework/version"
 Gem::Specification.new do |s|
   s.name        = "ad-framework"
   s.version     = Ad::Framework::VERSION
-  s.authors     = ["jcredding"]
-  s.email       = ["TempestTTU@gmail.com"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.authors     = ["Collin Redding", "Matt McPherson"]
+  s.homepage    = "http://github.com/teaminsight/ad-framework"
+  s.summary     = %q{A framework for defining an ActiveDirectory schema in ruby.}
+  s.description = %q{A framework for defining an ActiveDirectory schema in ruby.}
 
   s.rubyforge_project = "ad-framework"
 
