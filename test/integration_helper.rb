@@ -1,3 +1,8 @@
+require 'test/support/attributes'
+require 'test/support/attribute_types'
+require 'test/support/auxiliary_classes'
+require 'test/support/structural_classes'
+
 root_path = File.expand_path("../..", __FILE__)
 ldap_config = YAML.load(File.open(File.join(root_path, "private", "ldap.yml")))
 

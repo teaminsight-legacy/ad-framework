@@ -20,7 +20,7 @@ module AD
       def build_entry
         if self["objectclass"]
           name = self["objectclass"].last
-          structural_class = AD::Framework.defined_structural_classes[name]
+          structural_class = AD::Framework.defined_object_classes[name]
           if !structural_class
             raise(*[
               AD::Framework::StructuralClassNotDefined,

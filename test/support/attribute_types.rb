@@ -45,7 +45,7 @@ module AD
 
     def value=(new_value)
       values = [*new_value].collect do |value|
-        self.item_class.new(object, attr_ldap_name)
+        self.item_class.new(self.object, attr_ldap_name, value)
       end
       super(values.compact)
     end

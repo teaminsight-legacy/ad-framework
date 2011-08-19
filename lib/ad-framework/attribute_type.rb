@@ -4,10 +4,10 @@ module AD
     class AttributeType
       attr_accessor :object, :attr_ldap_name, :value, :ldap_value
 
-      def initialize(object, attr_ldap_name)
+      def initialize(object, attr_ldap_name, value = nil)
         self.object = object
         self.attr_ldap_name = attr_ldap_name
-        self.value = self.value_from_field
+        self.value = (value || self.value_from_field)
       end
 
       def value_from_field

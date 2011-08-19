@@ -7,7 +7,7 @@ module AD
   module Framework
 
     class Config
-      attr_accessor :attributes, :attribute_types, :structural_classes
+      attr_accessor :attributes, :attribute_types, :object_classes
 
       def initialize
         self.mappings = AD::Framework::Config::Mapping.new
@@ -15,7 +15,7 @@ module AD
 
         self.attributes = AD::Framework::Config::Mapping.new
         self.attribute_types = AD::Framework::Config::Mapping.new
-        self.structural_classes = AD::Framework::Config::Mapping.new
+        self.object_classes = AD::Framework::Config::Mapping.new
       end
 
       def ldap(&block)
@@ -54,8 +54,8 @@ module AD
       def add_attribute_type(attribute_type)
         self.attribute_types.add(attribute_type.key, attribute_type)
       end
-      def add_structural_class(structural_class)
-        self.structural_classes.add(structural_class.ldap_name, structural_class)
+      def add_object_class(object_class)
+        self.object_classes.add(object_class.ldap_name, object_class)
       end
 
     end

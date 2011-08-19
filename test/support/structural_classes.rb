@@ -13,12 +13,13 @@ AD::Framework.register_structural_class(AD::Top)
 
 module AD
   class User < AD::Top
+    include AD::SecurityPrincipal
 
     ldap_name "user"
     treebase "CN=Users"
     rdn :name
 
-    attributes :proxy_addresses, :unix_member_of
+    attributes :proxy_addresses
 
   end
 end

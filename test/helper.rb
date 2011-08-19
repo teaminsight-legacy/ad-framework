@@ -7,7 +7,3 @@ if !$LOAD_PATH.include?(root_path)
 end
 
 require 'ad-framework'
-
-require 'test/support/attributes'
-require 'test/support/attribute_types'
-require 'test/support/structural_class'

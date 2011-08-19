@@ -1,10 +1,9 @@
 require 'assert'
 require 'test/integration_helper'
 
-class DefinedStructuralClassTest < Assert::Context
-  desc "the defined structural class"
+class AD::Top
 
-  class TopTest < DefinedStructuralClassTest
+  class BaseTest < Assert::Context
     desc "top"
     setup do
       @structural_class = AD::Top
@@ -12,12 +11,11 @@ class DefinedStructuralClassTest < Assert::Context
     subject{ @structural_class }
 
     should "be registered with AD::Framework's config" do
-      assert_equal AD::Framework.config.structural_classes[subject.ldap_name], subject
+      assert_equal AD::Framework.config.object_classes[subject.ldap_name], subject
     end
-
   end
-
-  class SchemaTest < TopTest
+  
+  class SchemaTest < BaseTest
     desc "schema"
     setup do
       @ldap_name = "top"
@@ -44,7 +42,7 @@ class DefinedStructuralClassTest < Assert::Context
     end
   end
 
-  class InstanceTest < TopTest
+  class InstanceTest < BaseTest
     desc "instance"
     setup do
       @name = "joe test"
@@ -79,35 +77,6 @@ class DefinedStructuralClassTest < Assert::Context
     should "return the description set on it" do
       assert_equal @description, subject.description
       assert_equal [ @description ], subject.fields[:description]
-    end
-  end
-
-  class UserTest < DefinedStructuralClassTest
-    desc "user"
-    setup do
-      @structural_class = AD::User
-    end
-    subject{ @structural_class }
-  end
-
-  class SearchingTest < UserTest
-    desc "searching for an entry"
-    setup do
-      @user = @structural_class.find("joe test")
-    end
-    subject{ @user }
-
-    should have_instance_methods :dn, :name, :system_flags, :display_name, :description
-    should have_instance_methods :proxy_addresses
-
-    should "find the user" do
-      assert subject
-    end
-    should "set his name correctly" do
-      assert_equal "joe test", subject.name
-    end
-    should "return an array with proxy_addresses" do
-      assert_instance_of Array, subject.proxy_addresses
     end
   end
 

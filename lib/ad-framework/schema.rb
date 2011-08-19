@@ -4,20 +4,22 @@ module AD
   module Framework
 
     class Schema
-      attr_accessor :ldap_name, :rdn, :attributes
-      attr_accessor :klass, :entry
+      attr_accessor :ldap_name, :rdn, :attributes, :auxiliary_classes
+      attr_accessor :klass
 
       def initialize(klass)
         self.klass = klass
-        
+
         self.rdn = :name
-        if self.klass.superclass.respond_to?(:schema)
+        self.auxiliary_classes = Set.new
+
+        if self.klass.is_a?(::Class) && self.klass.superclass.respond_to?(:schema)
           self.attributes = self.klass.superclass.schema.attributes.dup
         else
           self.attributes = Set.new
         end
       end
-      
+
       def treebase
         if @treebase && self.default_treebase && !(@treebase.include?(self.default_treebase))
           [ @treebase, self.default_treebase ].join(", ")
@@ -25,7 +27,7 @@ module AD
           (@treebase || self.default_treebase)
         end
       end
-      
+
       def treebase=(new_value)
         @treebase = new_value
       end
@@ -47,6 +49,11 @@ module AD
           AD::Framework::Attribute.new(name).define_writer(self.klass)
         end
       end
+      
+      def add_auxiliary_class(klass)
+        self.auxiliary_classes << klass
+        self.attributes.merge(klass.schema.attributes)
+      end
 
       def inspect
         attrs_display = [ :klass, :ldap_name, :rdn, :attributes ].collect do |attr|
@@ -56,7 +63,7 @@ module AD
       end
 
       protected
-      
+
       def default_treebase
         AD::Framework.config.treebase
       end
