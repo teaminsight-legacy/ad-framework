@@ -79,5 +79,21 @@ class AD::Top
       assert_equal [ @description ], subject.fields[:description]
     end
   end
+  
+  class SearchingTest < BaseTest
+    desc "searching for an entry"
+    setup do
+      @top = @structural_class.find("CN=joe test, CN=Users, DC=reelfx, DC=com")
+    end
+    subject{ @top }
+
+    should "find the user" do
+      assert subject
+      assert_kind_of AD::User, subject
+    end
+    should "set his name correctly" do
+      assert_equal "joe test", subject.name
+    end
+  end
 
 end

@@ -14,6 +14,34 @@ class AD::User
       assert_equal AD::Framework.config.object_classes[subject.ldap_name], subject
     end
   end
+  
+  class SchemaTest < BaseTest
+    desc "schema"
+    setup do
+      @ldap_name = "user"
+      @rdn = :name
+      @treebase = [ "CN=Users", AD::Framework.config.treebase ].join(", ")
+      @attrs = [ :name, :system_flags, :display_name, :description, :proxy_addresses, 
+        :sam_account_name ]
+      @schema = @structural_class.schema
+    end
+    subject{ @schema }
+
+    should "store the ldap name defined on the class" do
+      assert_equal @ldap_name, subject.ldap_name
+    end
+    should "store the rdn defined on the class" do
+      assert_equal @rdn, subject.rdn
+    end
+    should "store the treebase defined on the class" do
+      assert_equal @treebase, subject.treebase
+    end
+    should "contain all the attributes defined on the class" do
+      @attrs.each do |attr|
+        assert_includes attr, subject.attributes
+      end
+    end
+  end
 
   class InstanceTest < BaseTest
     desc "instance"
