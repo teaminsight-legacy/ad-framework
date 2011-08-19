@@ -9,7 +9,7 @@ module AD
         self.attr_ldap_name = attr_ldap_name
         self.value = self.value_from_field
       end
-      
+
       def value_from_field
         (self.object.fields[self.attr_ldap_name] || []).first
       end
@@ -28,10 +28,10 @@ module AD
         end
         @ldap_value = new_ldap_value
       end
-      
+
       def inspect
         attr_display = [ :value, :ldap_value, :attr_ldap_name ].collect do |attr|
-          "#{attr}: #{self.send(attr).inspect}"
+          "#{attr}: #{self.instance_variable_get("@#{attr}").inspect}"
         end
         attr_display.push("object: #{object.class} - #{object.dn.inspect}")
         [ "#<#{self.class}", attr_display.join(", "), ">" ].join(" ")
