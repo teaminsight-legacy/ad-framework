@@ -12,7 +12,7 @@ module AD
         
         self.rdn = :name
         if self.klass.superclass.respond_to?(:schema)
-          self.attributes = self.klass.superclass.schema.attributes
+          self.attributes = self.klass.superclass.schema.attributes.dup
         else
           self.attributes = Set.new
         end

@@ -7,7 +7,11 @@ module AD
       def initialize(object, attr_ldap_name)
         self.object = object
         self.attr_ldap_name = attr_ldap_name
-        self.value = (self.object.fields[attr_ldap_name.to_s] || []).first
+        self.value = self.value_from_field
+      end
+      
+      def value_from_field
+        (self.object.fields[self.attr_ldap_name] || []).first
       end
 
       def value=(new_value)

@@ -97,11 +97,17 @@ class DefinedStructuralClassTest < Assert::Context
     end
     subject{ @user }
 
+    should have_instance_methods :dn, :name, :system_flags, :display_name, :description
+    should have_instance_methods :proxy_addresses
+
     should "find the user" do
       assert subject
     end
     should "set his name correctly" do
       assert_equal "joe test", subject.name
+    end
+    should "return an array with proxy_addresses" do
+      assert_instance_of Array, subject.proxy_addresses
     end
   end
 
