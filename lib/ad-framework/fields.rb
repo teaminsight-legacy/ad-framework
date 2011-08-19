@@ -32,7 +32,7 @@ module AD
       end
 
       def inspect
-        max_key_length = self.keys.collect(&:size).max + 1
+        max_key_length = (self.keys.collect(&:size).max || 0) + 1
         display = self.collect do |(key, value)|
           key_label = "#{key}:".rjust(max_key_length, ' ')
           [ key_label, value.inspect ].join("  ")

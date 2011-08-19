@@ -1,6 +1,7 @@
 root_path = File.expand_path("../..", __FILE__)
 ldap_config = YAML.load(File.open(File.join(root_path, "private", "ldap.yml")))
 
+FileUtils.mkdir_p(File.join(root_path, "log"))
 logger = Log4r::Logger.new("AD::Framework")
 logger.add(Log4r::FileOutputter.new('fileOutputter', {
   :filename => File.join(root_path, "log", "test.log"),

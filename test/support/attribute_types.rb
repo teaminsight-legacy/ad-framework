@@ -2,9 +2,9 @@ module AD
   class String < AD::Framework::AttributeType
 
     key "string"
-    
+
     def value=(new_value)
-      super(new_value.to_s)
+      super(new_value ? new_value.to_s : new_value)
     end
 
   end
@@ -17,7 +17,7 @@ module AD
     key "integer"
 
     def value=(new_value)
-      super(new_value.to_i)
+      super(new_value ? new_value.to_i : new_value)
     end
 
   end
