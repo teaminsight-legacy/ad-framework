@@ -34,7 +34,7 @@ module AD
           "#{attr}: #{self.instance_variable_get("@#{attr}").inspect}"
         end
         attr_display.push("object: #{object.class} - #{object.dn.inspect}")
-        [ "#<#{self.class}", attr_display.join(", "), ">" ].join(" ")
+        [ "#<#{self.class} ", attr_display.sort.join(", "), ">" ].join
       end
 
       class << self
