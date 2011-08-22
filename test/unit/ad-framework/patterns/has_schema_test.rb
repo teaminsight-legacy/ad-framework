@@ -25,7 +25,7 @@ module AD::Framework::Patterns::HasSchema
     should "set the schema's treebase with a call to #treebase" do
       new_value = "CN=container"
       subject.treebase new_value
-      assert_equal new_value, subject.schema.treebase
+      assert_match new_value, subject.schema.treebase
     end
     should "set the schema's rdn with a call to #rdn" do
       new_value = "name"

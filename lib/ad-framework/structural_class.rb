@@ -12,6 +12,8 @@ module AD
       attr_accessor :meta_class, :errors, :fields
 
       def initialize(attributes = {})
+        self.meta_class = class << self; self; end
+
         self.fields = AD::Framework::Fields.new(attributes.delete(:fields) || {})
 
         self.attributes = attributes

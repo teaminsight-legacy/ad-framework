@@ -8,9 +8,18 @@ module AD
           def included(klass)
             klass.class_eval do
               extend AD::Framework::Patterns::Searchable::ClassMethods
+              include AD::Framework::Patterns::Searchable::InstanceMethods
             end
           end
 
+        end
+        
+        module InstanceMethods
+          
+          def reload
+            # TODO
+          end
+          
         end
 
         module ClassMethods
@@ -23,6 +32,14 @@ module AD
             ldap_entry = self.connection.search(args).first
             fields = AD::Framework::Fields.new(ldap_entry)
             fields.build_entry
+          end
+          
+          def first
+            # TODO
+          end
+          
+          def all
+            # TODO
           end
 
         end
