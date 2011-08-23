@@ -1,5 +1,4 @@
 require 'assert'
-require 'test/integration_helper'
 
 class AD::User
 
