@@ -28,6 +28,10 @@ module AD
         end
         @ldap_value = new_ldap_value
       end
+      
+      def reset
+        self.value = self.value_from_field
+      end
 
       def inspect
         attr_display = [ :value, :ldap_value, :attr_ldap_name ].collect do |attr|

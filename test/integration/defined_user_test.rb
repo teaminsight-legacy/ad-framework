@@ -13,14 +13,14 @@ class AD::User
       assert_equal AD::Framework.config.object_classes[subject.ldap_name], subject
     end
   end
-  
+
   class SchemaTest < BaseTest
     desc "schema"
     setup do
       @ldap_name = "user"
       @rdn = :name
       @treebase = [ "CN=Users", AD::Framework.config.treebase ].join(", ")
-      @attrs = [ :name, :system_flags, :display_name, :description, :proxy_addresses, 
+      @attrs = [ :name, :system_flags, :display_name, :description, :proxy_addresses,
         :sam_account_name ]
       @schema = @structural_class.schema
     end
@@ -70,16 +70,72 @@ class AD::User
 
   class SearchingTest < BaseTest
     desc "searching for an entry"
-    setup do
-      @user = @structural_class.find("joe test")
-    end
-    subject{ @user }
+    subject{ @structural_class }
 
-    should "find the user" do
-      assert subject
+    should "find the user from his dn with a call to #find" do
+      name = "joe test"
+      @user = subject.find("CN=#{name}, #{subject.schema.treebase}")
+
+      assert @user
+      assert_equal name, @user.name
     end
-    should "set his name correctly" do
-      assert_equal "joe test", subject.name
+    should "find the user from his rdn with a call to #find" do
+      name = "joe test"
+      @user = subject.find(name)
+
+      assert @user
+      assert_equal name, @user.name
+    end
+    should "find the first matching user with a call to #first" do
+      name = "joe test"
+      @user = subject.first({ :name => name })
+
+      assert @user
+      assert_equal name, @user.name
+    end
+    should "find the first matching user using a ldap attribute with a call to #first" do
+      user_name = "jtest"
+      @user = subject.first({ :samaccountname => user_name })
+
+      assert @user
+      assert_equal user_name, @user.sam_account_name
+    end
+    should "return a collection of matching users with a call to #all" do
+      name = "*test*"
+      @users = subject.all({ :where => { :name => name }, :size => 5 })
+
+      assert_not_empty @users
+      @users.each do |user|
+        assert_match user.name, /test/
+      end
+    end
+    should "return a collection of matching users with complicated filters with a call to #all" do
+      user_account_control = 545
+      objectclass = "computer"
+      @users = subject.all({
+        :where => {
+          :useraccountcontrol__ge => user_account_control,
+          :objectclass__ne => objectclass,
+        },
+        :limit => 5
+      })
+
+      assert_not_empty @users
+      @users.each do |user|
+        assert user.fields["useraccountcontrol"].first.to_i >= user_account_control
+      end
+    end
+    should "reload the user's fields and attributes with a call to #reload" do
+      name = "joe test"
+      new_name = "yo test"
+      @user = subject.find(name)
+
+      assert @user
+      @user.name = new_name
+      assert_equal new_name, @user.name
+      @user.reload
+      assert_not_equal new_name, @user.name
+      assert_equal name, @user.name
     end
   end
 

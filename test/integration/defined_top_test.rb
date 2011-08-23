@@ -82,6 +82,8 @@ class AD::Top
   class SearchingTest < BaseTest
     desc "searching for an entry"
     setup do
+      @current = @structural_class.schema.treebase
+      @structural_class.schema.treebase = nil
       @top = @structural_class.find("CN=joe test, CN=Users, DC=reelfx, DC=com")
     end
     subject{ @top }
@@ -92,6 +94,10 @@ class AD::Top
     end
     should "set his name correctly" do
       assert_equal "joe test", subject.name
+    end
+    
+    teardown do
+      @structural_class.schema.treebase = @current
     end
   end
 
