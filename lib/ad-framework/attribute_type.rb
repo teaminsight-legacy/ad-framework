@@ -7,7 +7,7 @@ module AD
       def initialize(object, attr_ldap_name, value = nil)
         self.object = object
         self.attr_ldap_name = attr_ldap_name
-        self.value = (value || self.value_from_field)
+        self.value = value.nil? ? self.value_from_field : value
       end
 
       def value_from_field
