@@ -1,4 +1,4 @@
-require "ad-framework/fields"
+require 'ad-framework/utilities/entry_builder'
 
 module AD
   module Framework
@@ -22,10 +22,7 @@ module AD
             args = { :where => { :dn__eq => self.fields["dn"] }, :limit => 1 }
             search_args = self.class.build_ad_search_args(args)
             ldap_entry = self.connection.search(search_args).first
-            self.fields = AD::Framework::Fields.new(ldap_entry || {})
-            self.schema.attributes.each do |name|
-              self.send("#{name}_attribute_type").reset
-            end
+            AD::Framework::Utilities::EntryBuilder.new(ldap_entry, { :reload => self })
             self
           end
 
@@ -75,12 +72,10 @@ module AD
             results = self.connection.search(search_args)
             if !collection
               ldap_entry = results.first
-              fields = AD::Framework::Fields.new(ldap_entry || {})
-              fields.build_entry
+              AD::Framework::Utilities::EntryBuilder.new(ldap_entry).entry
             else
               results.collect do |ldap_entry|
-                fields = AD::Framework::Fields.new(ldap_entry || {})
-                fields.build_entry
+                AD::Framework::Utilities::EntryBuilder.new(ldap_entry).entry
               end
             end
           end

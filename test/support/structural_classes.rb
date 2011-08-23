@@ -12,7 +12,21 @@ end
 AD::Framework.register_structural_class(AD::Top)
 
 module AD
-  class User < AD::Top
+  class Person < AD::Top
+    ldap_name "person"
+  end
+end
+AD::Framework.register_structural_class(AD::Person)
+
+module AD
+  class OrganizationalPerson < AD::Person
+    ldap_name "organizationalPerson"
+  end
+end
+AD::Framework.register_structural_class(AD::OrganizationalPerson)
+
+module AD
+  class User < AD::OrganizationalPerson
     include AD::SecurityPrincipal
 
     ldap_name "user"

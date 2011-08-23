@@ -7,7 +7,7 @@ module AD
     class AttributeTypeNotDefined < StandardError
     end
     
-    class StructuralClassNotDefined < StandardError
+    class ObjectClassNotDefined < StandardError
     end
 
   end
