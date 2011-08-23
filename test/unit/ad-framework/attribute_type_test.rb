@@ -135,7 +135,7 @@ class AD::Framework::AttributeType
       @class = Class.new(AD::Framework::AttributeType) do
 
         def self.attribute_type_method(attribute, method_name)
-          lambda do
+          Proc.new do
             define_method(method_name){ true }
           end
         end
@@ -187,7 +187,7 @@ class AD::Framework::AttributeType
       @class = Class.new(AD::Framework::AttributeType) do
 
         def self.reader_method(attribute)
-          lambda do
+          Proc.new do
             define_method(attribute.name){ true }
           end
         end
@@ -240,7 +240,7 @@ class AD::Framework::AttributeType
       @class = Class.new(AD::Framework::AttributeType) do
 
         def self.writer_method(attribute)
-          lambda do
+          Proc.new do
             define_method("#{attribute.name}="){ true }
           end
         end

@@ -24,7 +24,7 @@ class AD::String
     setup do
       @attr_name = "name"
       @name = "someone"
-      mock_fields = { @attr_name => @name }
+      mock_fields = { @attr_name => [ @name ] }
       mock_object = mock()
       mock_object.stubs(:fields).returns(mock_fields)
       @string = @attribute_type_class.new(mock_object, @attr_name)
