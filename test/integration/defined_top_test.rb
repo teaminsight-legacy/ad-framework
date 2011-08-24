@@ -84,7 +84,7 @@ class AD::Top
     setup do
       @current = @structural_class.schema.treebase
       @structural_class.schema.treebase = nil
-      @top = @structural_class.find("CN=joe test, CN=Users, DC=reelfx, DC=com")
+      @top = @structural_class.find("CN=joe test, #{AD::User.schema.treebase}")
     end
     subject{ @top }
 

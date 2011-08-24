@@ -1,0 +1,6 @@
+:host: "127.0.0.1"
+:port: 389
+:base: "DC=localhost"
+:auth:
+  :username: "CN=root,DC=localhost"
+  :password: "secret"

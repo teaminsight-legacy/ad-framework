@@ -3,6 +3,7 @@ if RUBY_VERSION =~ /^1.9/ && ENV["COVERAGE"]
   SimpleCov.start
 end
 
+require 'assert'
 require 'log4r'
 require 'mocha'
 require 'yaml'
@@ -28,7 +29,7 @@ require 'test/support/auxiliary_classes'
 require 'test/support/structural_classes'
 
 root_path = File.expand_path("../..", __FILE__)
-ldap_config = YAML.load(File.open(File.join(root_path, "private", "ldap.yml")))
+ldap_config = YAML.load(File.open(File.join(root_path, "test", "ldap.yml")))
 
 FileUtils.mkdir_p(File.join(root_path, "log"))
 logger = Log4r::Logger.new("AD::Framework")
