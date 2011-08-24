@@ -3,6 +3,7 @@ if RUBY_VERSION =~ /^1.9/ && ENV["COVERAGE"]
   SimpleCov.start
 end
 
+require 'assert'
 require 'log4r'
 require 'mocha'
 require 'yaml'
