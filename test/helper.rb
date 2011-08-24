@@ -49,5 +49,7 @@ AD::Framework.configure do |config|
   config.treebase = ldap_config[:base]
   config.logger = logger
   config.search_size_supported = false
-  config.run_commands = false
+  config.run_commands = true
 end
+
+require 'test/support/seed'

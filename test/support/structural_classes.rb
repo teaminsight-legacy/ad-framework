@@ -12,6 +12,13 @@ end
 AD::Framework.register_structural_class(AD::Top)
 
 module AD
+  class Container < AD::Top
+    ldap_name "container"
+  end
+end
+AD::Framework.register_structural_class(AD::Container)
+
+module AD
   class Person < AD::Top
     ldap_name "person"
   end
