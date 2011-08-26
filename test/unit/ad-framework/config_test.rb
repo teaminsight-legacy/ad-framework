@@ -38,6 +38,15 @@ class AD::Framework::Config
       end
     end
 
+    should "re-register any object classes when ldap_prefix is set" do
+      object_class = Class.new(AD::Framework::StructuralClass) do
+        ldap_name "something"
+      end
+      subject.add_object_class(object_class)
+      subject.ldap_prefix = "something-"
+      assert_equal object_class, subject.object_classes["something-#{object_class.ldap_name}"]
+    end
+
     should "return the adapter's logger with a call to #logger" do
       subject.adapter.config.logger = mock()
       assert_equal subject.adapter.logger, subject.logger

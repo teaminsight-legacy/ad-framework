@@ -14,10 +14,10 @@ module Seed
     end
 
     def down
-      container = AD::Container.find("AD Framework Tests")
+      container = AD::Container.first({ :name => "AD Framework Tests" })
       dn = "CN=Users, CN=AD Framework Tests, #{AD::Container.treebase}"
-      users_container = AD::Container.find(dn) if container
-      user = AD::User.find("joe test") if users_container
+      users_container = AD::Container.first({ :dn => dn }) if container
+      user = AD::User.first({ :name => "joe test" }) if users_container
 
       user.destroy if user
       users_container.destroy if users_container

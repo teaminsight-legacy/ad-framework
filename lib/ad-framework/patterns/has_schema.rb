@@ -22,7 +22,6 @@ module AD
             @schema ||= self.class.schema.dup
           end
 
-          # TODO: test that this will use distinguishedname then dn then build it
           def dn
             dn = self.fields[:distinguishedname] || self.fields[:dn]
             dn ||= [ "CN=#{self.send(self.schema.rdn)}", self.schema.treebase ].join(", ")

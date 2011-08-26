@@ -21,12 +21,36 @@ module AD::Framework::Patterns::Searchable
     should have_class_methods :find, :first, :all
 
     should "search for it's ldap entry and reset it's fields a call to #reload" do
-      expected = { :dn__eq => subject.fields["dn"], :size => 1,
+      expected = { :dn__eq => subject.fields[:dn], :size => 1,
         :objectclass__eq => subject.schema.ldap_name, :base => subject.schema.treebase }
       self.mock_connection(expected, [ @fields ])
 
       assert_nothing_raised{ subject.reload }
       assert_equal(@fields, subject.fields)
+    end
+
+    should "search for it's entry with its distinguishedname then dn with a call to #reload" do
+      subject.fields[:distinguishedname] = "distinguishedname test"
+      subject.fields[:dn] = "dn test"
+      expected = { :dn__eq => subject.fields[:distinguishedname], :size => 1,
+        :objectclass__eq => subject.schema.ldap_name, :base => subject.schema.treebase }
+      self.mock_connection(expected, [ @fields ])
+
+      assert_nothing_raised{ subject.reload }
+      subject.fields[:distinguishedname] = nil
+      expected[:dn__eq] = subject.fields[:dn]
+      self.mock_connection(expected, [ @fields ])
+
+      assert_nothing_raised{ subject.reload }
+    end
+
+    should "raise a not found exception if it's dn is bad with a call to #reload" do
+      subject.fields[:distinguishedname] = subject.fields[:dn] = nil
+      expected = { :dn__eq => subject.fields[:dn], :size => 1,
+        :objectclass__eq => subject.schema.ldap_name, :base => subject.schema.treebase }
+      self.mock_connection(expected, [])
+
+      assert_raises(AD::Framework::EntryNotFound){ subject.reload }
     end
 
     should "search with the args passed and return a single entry with a call to #first" do
@@ -75,6 +99,15 @@ module AD::Framework::Patterns::Searchable
       assert_nothing_raised{ found = @class.find(rdn) }
       assert found
       assert_equal(@fields, found.fields)
+    end
+
+    should "raise an error when no entry is found with a call to #find" do
+      dn = "CN=someone, #{@class.schema.treebase}"
+      expected = { :dn__eq => dn, :size => 1, :objectclass__eq => @class.schema.ldap_name,
+        :base => @class.schema.treebase }
+      self.mock_connection(expected, [])
+
+      assert_raises(AD::Framework::EntryNotFound){ @class.find(dn) }
     end
 
     teardown do

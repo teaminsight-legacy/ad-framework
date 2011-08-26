@@ -13,19 +13,50 @@ class AD::Framework::Schema
     subject{ @schema }
 
     should have_accessors :ldap_name, :rdn, :attributes, :auxiliary_classes, :klass
+    should have_accessors :structural_classes
     should have_instance_methods :treebase, :treebase=, :add_attributes, :add_read_attributes
     should have_instance_methods :add_write_attributes, :add_auxiliary_class
 
     should "default the rdn to :name" do
       assert_equal :name, subject.rdn
     end
-    should "default auxiliary classes to a new set" do
+    should "default auxiliary classes to a new array" do
       assert_instance_of Array, subject.auxiliary_classes
       assert_empty subject.auxiliary_classes
+    end
+    should "default structural classes to a new array" do
+      assert_instance_of Array, subject.structural_classes
     end
     should "default attributes to a new set" do
       assert_instance_of Set, subject.attributes
       assert_empty subject.attributes
+    end
+    should "use the ldap_prefix with ldap_name if set" do
+      current_ad_ldap_config = AD::LDAP.instance_variable_get("@config")
+      current_config = AD::Framework.instance_variable_get("@config")
+      AD::Framework.instance_variable_set("@config", nil)
+      AD::LDAP.instance_variable_set("@config", nil)
+      ldap_name = "amazing"
+      subject.ldap_name = ldap_name
+      prefix = "something-"
+      expected = "#{prefix}#{ldap_name}"
+
+      AD::Framework.config.ldap_prefix = prefix
+      assert_equal expected, subject.ldap_name
+      AD::Framework.config.ldap_prefix = nil
+      assert_equal ldap_name, subject.ldap_name
+
+      AD::Framework.instance_variable_set("@config", current_config)
+      AD::LDAP.instance_variable_set("@config", current_ad_ldap_config)
+    end
+    should "return all its object classes in the correct order with a call to #object_classes" do
+      structural_classes = [ "structural_class" ]
+      subject.structural_classes += structural_classes
+      auxiliary_classes = [ "auxiliary_class" ]
+      subject.auxiliary_classes += auxiliary_classes
+      
+      expected = [ subject.structural_classes, subject.klass, subject.auxiliary_classes ].flatten
+      assert_equal expected, subject.object_classes
     end
   end
 
@@ -39,6 +70,13 @@ class AD::Framework::Schema
 
     should "default attributes to it's parent schema's attributes" do
       assert_equal @class.schema.attributes, subject.attributes
+    end
+    should "default structural classes to an array with its parent" do
+      assert_instance_of Array, subject.structural_classes
+      @class.schema.structural_classes.each do |object_class|
+        assert_includes object_class, subject.structural_classes
+      end
+      assert_includes @class, subject.structural_classes
     end
   end
 
@@ -88,7 +126,7 @@ class AD::Framework::Schema
     should "define the reader and then store it's symbol with a call to #add_read_attributes" do
       names = [ :display_name ]
       subject.add_read_attributes(names)
-      
+
       assert_respond_to :display_name_attribute_type, @class.new
       assert_respond_to :display_name, @class.new
       assert_includes :display_name, subject.attributes
@@ -96,7 +134,7 @@ class AD::Framework::Schema
     should "define the writer and then store it's symbol with a call to #add_write_attributes" do
       names = [ :description ]
       subject.add_read_attributes(names)
-      
+
       assert_respond_to :description_attribute_type, @class.new
       assert_respond_to :description, @class.new
       assert_includes :description, subject.attributes
@@ -106,7 +144,7 @@ class AD::Framework::Schema
       @schema.attributes.clear
     end
   end
-  
+
   class AddAuxiliaryClassesTest < BaseTest
     desc "adding auxiliary classes"
     setup do
@@ -116,19 +154,19 @@ class AD::Framework::Schema
         attributes :sam_account_name
       end
     end
-    
+
     should "merge the auxiliary classes attributes and store it" do
       subject.add_auxiliary_class(@auxiliary_class)
-      
+
       assert_includes @auxiliary_class, subject.auxiliary_classes
       @auxiliary_class.schema.attributes.each do |name|
         assert_includes name, subject.attributes
       end
     end
-    
+
     teardown do
       @schema.auxiliary_classes.clear
-    end    
+    end
   end
 
 end

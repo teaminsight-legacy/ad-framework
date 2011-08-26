@@ -1,4 +1,5 @@
 require 'ad-framework/utilities/entry_builder'
+require 'ad-framework/exceptions'
 
 module AD
   module Framework
@@ -18,16 +19,22 @@ module AD
 
         module InstanceMethods
 
-          # TODO: raise an error when cant find
           def reload
-            # TODO: test that it will use fields distinguishedname or dn
-            args = { 
-              :where => { :dn__eq => (self.fields[:distinguishedname] || self.fields[:dn]) }, 
-              :limit => 1 
+            args = {
+              :where => { :dn__eq => (self.fields[:distinguishedname] || self.fields[:dn]) },
+              :limit => 1
             }
             search_args = self.class.build_ad_search_args(args)
             ldap_entry = self.connection.search(search_args).first
-            AD::Framework::Utilities::EntryBuilder.new(ldap_entry, { :reload => self })
+            if ldap_entry
+              AD::Framework::Utilities::EntryBuilder.new(ldap_entry, { :reload => self })
+            else
+              dn = args[:where][:dn__eq]
+              raise(*[
+                AD::Framework::EntryNotFound,
+                "An entry could not be found with dn #{dn.inspect} (#{self.class})"
+              ])
+            end
             self
           end
 
@@ -35,11 +42,18 @@ module AD
 
         module ClassMethods
 
-          # TODO: raise an error when cant find
           def find(dn)
             dn = self.build_ad_dn(dn)
             args = { :where => { :dn__eq => dn }, :size => 1 }
-            self.fetch_ad_entry(args)
+            object = self.fetch_ad_entry(args)
+            if !object
+              dn = args[:where][:dn__eq]
+              raise(*[
+                AD::Framework::EntryNotFound,
+                "An entry could not be found with dn #{dn.inspect} (#{self.class})"
+              ])
+            end
+            object
           end
 
           def first(args = {})

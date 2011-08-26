@@ -4,7 +4,6 @@ module AD
   module Framework
 
     class Schema
-      # TODO: test structural classes
       attr_accessor :ldap_name, :rdn, :attributes, :structural_classes, :auxiliary_classes
       attr_accessor :klass
 
@@ -17,16 +16,14 @@ module AD
         if self.klass.is_a?(::Class) && self.klass.superclass.respond_to?(:schema)
           parent_schema = self.klass.superclass.schema
           self.attributes = parent_schema.attributes.dup
-          # TODO: test that structural classes gets set here
           self.structural_classes = parent_schema.structural_classes.dup
           self.structural_classes << self.klass.superclass
         else
           self.attributes = Set.new
-          self.structural_classes = [] # TODO: test that it defaults to an array
+          self.structural_classes = []
         end
       end
 
-      # TODO: test that ldap name READER will use the ldap_prefix if set
       def ldap_name
         if @ldap_name
           [ AD::Framework.config.ldap_prefix,
@@ -65,7 +62,6 @@ module AD
         end
       end
 
-      # TODO: test this
       def object_classes
         [ self.structural_classes.to_a,
           self.klass,
