@@ -7,7 +7,7 @@ module AD
   module Framework
 
     class Config
-      attr_accessor :attributes, :attribute_types, :object_classes
+      attr_accessor :attributes, :attribute_types, :object_classes, :ldap_prefix
 
       def initialize
         self.mappings = AD::Framework::Config::Mapping.new

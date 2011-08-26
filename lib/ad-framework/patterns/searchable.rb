@@ -18,8 +18,13 @@ module AD
 
         module InstanceMethods
 
+          # TODO: raise an error when cant find
           def reload
-            args = { :where => { :dn__eq => self.fields["dn"] }, :limit => 1 }
+            # TODO: test that it will use fields distinguishedname or dn
+            args = { 
+              :where => { :dn__eq => (self.fields[:distinguishedname] || self.fields[:dn]) }, 
+              :limit => 1 
+            }
             search_args = self.class.build_ad_search_args(args)
             ldap_entry = self.connection.search(search_args).first
             AD::Framework::Utilities::EntryBuilder.new(ldap_entry, { :reload => self })
@@ -30,6 +35,7 @@ module AD
 
         module ClassMethods
 
+          # TODO: raise an error when cant find
           def find(dn)
             dn = self.build_ad_dn(dn)
             args = { :where => { :dn__eq => dn }, :size => 1 }
@@ -44,7 +50,7 @@ module AD
           def all(args = {})
             self.fetch_ad_entry(args, true)
           end
-          
+
           def build_ad_search_args(args = {})
             default_args = {
               :objectclass__eq => self.schema.ldap_name,

@@ -16,6 +16,10 @@ module AD
       def []=(lookup, object)
         super(lookup.to_s, object)
       end
+      
+      def to_hash
+        self.inject({}){|h, (k,v)| h.merge({ k => v }) }
+      end
 
       def inspect
         max_key_length = (self.keys.collect(&:size).max || 0) + 1

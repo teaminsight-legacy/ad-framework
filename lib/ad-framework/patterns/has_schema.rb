@@ -19,13 +19,13 @@ module AD
         module InstanceMethods
 
           def schema
-            self.class.schema
+            @schema ||= self.class.schema.dup
           end
-          
+
+          # TODO: test that this will use distinguishedname then dn then build it
           def dn
-            [ "CN=#{self.send(self.schema.rdn)}",
-              self.schema.treebase
-            ].join(", ")
+            dn = self.fields[:distinguishedname] || self.fields[:dn]
+            dn ||= [ "CN=#{self.send(self.schema.rdn)}", self.schema.treebase ].join(", ")
           end
 
           def attributes
@@ -53,7 +53,7 @@ module AD
             (self.schema.ldap_name = name) if name
             self.schema.ldap_name
           end
-          
+
           def treebase(value = nil)
             (self.schema.treebase = value) if value
             self.schema.treebase

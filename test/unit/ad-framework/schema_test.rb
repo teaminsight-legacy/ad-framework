@@ -20,7 +20,7 @@ class AD::Framework::Schema
       assert_equal :name, subject.rdn
     end
     should "default auxiliary classes to a new set" do
-      assert_instance_of Set, subject.auxiliary_classes
+      assert_instance_of Array, subject.auxiliary_classes
       assert_empty subject.auxiliary_classes
     end
     should "default attributes to a new set" do

@@ -3,7 +3,7 @@ module AD
     include AD::Framework::AuxiliaryClass
 
     ldap_name "securityPrincipal"
-    attributes :sam_account_name
+    attributes :sam_account_name, :object_sid
     
   end
 end

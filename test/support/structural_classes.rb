@@ -2,9 +2,7 @@ module AD
   class Top < AD::Framework::StructuralClass
 
     ldap_name "top"
-    treebase "OU=Stuff"
     rdn :name
-
     attributes :name, :system_flags, :display_name, :description
 
   end
@@ -37,9 +35,8 @@ module AD
     include AD::SecurityPrincipal
 
     ldap_name "user"
-    treebase "CN=Users"
+    treebase "CN=Users, CN=AD Framework Tests"
     rdn :name
-
     attributes :proxy_addresses
 
   end

@@ -4,20 +4,34 @@ module AD
   module Framework
 
     class Schema
-      attr_accessor :ldap_name, :rdn, :attributes, :auxiliary_classes
+      # TODO: test structural classes
+      attr_accessor :ldap_name, :rdn, :attributes, :structural_classes, :auxiliary_classes
       attr_accessor :klass
 
       def initialize(klass)
         self.klass = klass
 
         self.rdn = :name
-        self.auxiliary_classes = Set.new
+        self.auxiliary_classes = []
 
         if self.klass.is_a?(::Class) && self.klass.superclass.respond_to?(:schema)
-          self.attributes = self.klass.superclass.schema.attributes.dup
+          parent_schema = self.klass.superclass.schema
+          self.attributes = parent_schema.attributes.dup
+          # TODO: test that structural classes gets set here
+          self.structural_classes = parent_schema.structural_classes.dup
+          self.structural_classes << self.klass.superclass
         else
           self.attributes = Set.new
+          self.structural_classes = [] # TODO: test that it defaults to an array
         end
+      end
+
+      # TODO: test that ldap name READER will use the ldap_prefix if set
+      def ldap_name=(new_value)
+        @ldap_name = [
+          AD::Framework.config.ldap_prefix,
+          new_value
+        ].compact.join
       end
 
       def treebase
@@ -49,10 +63,19 @@ module AD
           AD::Framework::Attribute.new(name).define_writer(self.klass)
         end
       end
-      
+
+      # TODO: test this
+      def object_classes
+        [ self.structural_classes.to_a,
+          self.klass,
+          self.auxiliary_classes.to_a
+        ].flatten.compact
+      end
+
       def add_auxiliary_class(klass)
         self.auxiliary_classes << klass
         self.attributes.merge(klass.schema.attributes)
+        self.auxiliary_classes.uniq!
       end
 
       def inspect

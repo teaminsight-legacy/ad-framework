@@ -21,7 +21,7 @@ module AD::Framework::Patterns::Searchable
     should have_class_methods :find, :first, :all
 
     should "search for it's ldap entry and reset it's fields a call to #reload" do
-      expected = { :dn__eq => subject.fields["dn"], :size => 1, 
+      expected = { :dn__eq => subject.fields["dn"], :size => 1,
         :objectclass__eq => subject.schema.ldap_name, :base => subject.schema.treebase }
       self.mock_connection(expected, [ @fields ])
 

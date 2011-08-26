@@ -13,7 +13,7 @@ class AD::Framework::Config
     end
     subject{ @config }
 
-    should have_accessors :attributes, :attribute_types, :object_classes
+    should have_accessors :attributes, :attribute_types, :object_classes, :ldap_prefix
     should have_accessors :logger, :search_size_supported, :mappings, :run_commands, :treebase
     should have_instance_methods :ldap, :adapter, :add_attribute, :add_attribute_type
     should have_instance_methods :add_object_class

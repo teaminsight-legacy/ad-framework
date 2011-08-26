@@ -14,6 +14,11 @@ class AD::Framework::Fields
     should "be a kind of Hash" do
       assert_kind_of Hash, subject
     end
+    should "return an instance of a hash with a call to #to_hash" do
+      assert_instance_of Hash, subject.to_hash
+      assert_not_instance_of Hash, subject
+      assert_equal subject, subject.to_hash
+    end
     should "lookup an item with the key as a string with a call to #[]" do
       subject[:a] = true
       assert_equal true, subject["a"]

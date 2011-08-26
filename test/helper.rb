@@ -23,11 +23,6 @@ class Assert::Context
   include Mocha::API
 end
 
-require 'test/support/attributes'
-require 'test/support/attribute_types'
-require 'test/support/auxiliary_classes'
-require 'test/support/structural_classes'
-
 root_path = File.expand_path("../..", __FILE__)
 ldap_config = YAML.load(File.open(File.join(root_path, "test", "ldap.yml")))
 
@@ -50,6 +45,20 @@ AD::Framework.configure do |config|
   config.logger = logger
   config.search_size_supported = false
   config.run_commands = true
+  config.ldap_prefix = "adtest-"
 end
 
+require 'test/support/attributes'
+require 'test/support/attribute_types'
+require 'test/support/auxiliary_classes'
+require 'test/support/structural_classes'
 require 'test/support/seed'
+
+Assert.suite.setup do
+  Seed.up
+end
+
+Assert.suite.teardown do
+  Seed.down
+end
+
