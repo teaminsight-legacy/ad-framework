@@ -18,6 +18,15 @@ module AD
         self.object_classes = AD::Framework::Config::Mapping.new
       end
 
+      # TODO test
+      def ldap_prefix=(new_value)
+        @ldap_prefix = new_value
+        self.object_classes.each do |key, value|
+          self.object_classes.delete(key)
+          self.add_object_class(value)
+        end
+      end
+
       def ldap(&block)
         if block
           AD::LDAP.configure(&block)

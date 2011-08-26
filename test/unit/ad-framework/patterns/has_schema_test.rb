@@ -78,8 +78,17 @@ module AD::Framework::Patterns::HasSchema
     should "return it's class's schema wtih a call to #schema" do
       assert_equal subject.class.schema.klass, subject.schema.klass
     end
-    should "return a concatenation of it's rdn and treebase with a call to #dn" do
+    should "return use the fields then a concatenation of rdn and treebase with a call to #dn" do
+      expected_distinguishedname = "CN=full not expected, #{subject.schema.treebase}"
+      subject.fields[:distinguishedname] = expected_distinguishedname
+      expected_dn = "CN=not expected, #{subject.schema.treebase}"
+      subject.fields[:dn] = expected_dn
       expected = "CN=#{subject.send(subject.schema.rdn)}, #{subject.schema.treebase}"
+
+      assert_equal expected_distinguishedname, subject.dn
+      subject.fields[:distinguishedname] = nil
+      assert_equal expected_dn, subject.dn
+      subject.fields[:dn] = nil
       assert_equal expected, subject.dn
     end
     should "return a hash of the attributes and their values with a call to #attributes" do

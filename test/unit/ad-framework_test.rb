@@ -6,7 +6,11 @@ module AD::Framework
     desc "the AD::Framework module"
     setup do
       @previous_config = AD::Framework.config.dup
+      @previous_ad_ldap_config = AD::LDAP.config.dup
       AD::Framework.instance_variable_set("@config", nil)
+      AD::LDAP.instance_variable_set("@logger", nil)
+      AD::LDAP.instance_variable_set("@adapter", nil)
+      AD::LDAP.instance_variable_set("@config", nil)
       @module = AD::Framework
     end
     subject{ @module }
@@ -85,6 +89,7 @@ module AD::Framework
 
     teardown do
       AD::Framework.instance_variable_set("@config", @previous_config)
+      AD::LDAP.instance_variable_set("@config", @previous_ad_ldap_config)
     end
   end
 

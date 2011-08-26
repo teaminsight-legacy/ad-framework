@@ -27,11 +27,12 @@ module AD
       end
 
       # TODO: test that ldap name READER will use the ldap_prefix if set
-      def ldap_name=(new_value)
-        @ldap_name = [
-          AD::Framework.config.ldap_prefix,
-          new_value
-        ].compact.join
+      def ldap_name
+        if @ldap_name
+          [ AD::Framework.config.ldap_prefix,
+            @ldap_name
+          ].compact.join
+        end
       end
 
       def treebase
