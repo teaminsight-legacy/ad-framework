@@ -12,7 +12,7 @@ AD::Framework is a basis for defining an Active Directory schema in ruby. It pro
 
 ## License
 
-Copyright (c) 2011 Collin Redding and Team Insight
+Copyright (c) 2011 Collin Redding, Matt McPherson and Team Insight
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation

@@ -3,7 +3,6 @@ if RUBY_VERSION =~ /^1.9/ && ENV["COVERAGE"]
   SimpleCov.start
 end
 
-require 'assert'
 require 'log4r'
 require 'mocha'
 require 'yaml'
@@ -13,7 +12,7 @@ if RUBY_VERSION =~ /^1.9/
 end
 
 root_path = File.expand_path("../..", __FILE__)
-ldap_config = YAML.load(File.open(File.join(root_path, "test", "support", "ldap.yml")))
+ldap_config = YAML.load(File.open(File.join(root_path, "test", "support", "ldap.yml")))[:remote]
 
 FileUtils.mkdir_p(File.join(root_path, "log"))
 TEST_LOGGER = Log4r::Logger.new("AD::Framework")
@@ -39,8 +38,10 @@ require 'test/support/state'
 require 'test/support/factory'
 require 'test/support/seed'
 
-class Assert::Context
-  include Mocha::API
+if defined?(Assert)
+  class Assert::Context
+    include Mocha::API
+  end
 end
 
 AD::Framework.configure do |config|
@@ -57,15 +58,17 @@ AD::Framework.configure do |config|
   config.ldap_prefix = "adtest-"
 end
 
-Assert.suite.setup do
-  puts "\nSeeding the ldap database..."
-  time = Benchmark.measure{ Seed.up }
-  puts ("Done (%.6f seconds)" % [ time.real ])
-end
+if defined?(Assert)
+  Assert.suite.setup do
+    puts "\nSeeding the ldap database..."
+    time = Benchmark.measure{ Seed.up }
+    puts ("Done (%.6f seconds)" % [ time.real ])
+  end
 
-Assert.suite.teardown do
-  puts "\nCleaning up the ldap database..."
-  time = Benchmark.measure{ Seed.down }
-  puts ("Done (%.6f seconds)\n\n" % [ time.real ])
+  Assert.suite.teardown do
+    puts "\nCleaning up the ldap database..."
+    time = Benchmark.measure{ Seed.down }
+    puts ("Done (%.6f seconds)\n\n" % [ time.real ])
+  end
 end
 
