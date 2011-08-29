@@ -9,13 +9,14 @@ class AD::Framework::Schema
       @structural_class = Factory.structural_class do
         attributes :name
         must_set :name
+        before_create :something_amazing
       end
       @schema = AD::Framework::Schema.new(@structural_class)
     end
     subject{ @schema }
 
     should have_accessors :ldap_name, :rdn, :attributes, :auxiliary_classes, :klass
-    should have_accessors :structural_classes, :mandatory
+    should have_accessors :structural_classes, :mandatory, :callbacks
     should have_instance_methods :treebase, :treebase=, :add_attributes, :add_read_attributes
     should have_instance_methods :add_write_attributes, :add_auxiliary_class
 
@@ -36,6 +37,9 @@ class AD::Framework::Schema
     should "default mandatory to a new set" do
       assert_instance_of Set, subject.mandatory
       assert_empty subject.mandatory
+    end
+    should "default callbacks to a new hash" do
+      assert_instance_of Hash, subject.callbacks
     end
 
     teardown do
@@ -107,6 +111,9 @@ class AD::Framework::Schema
     end
     should "default mandatory to it's parents" do
       assert_equal @structural_class.schema.mandatory, subject.mandatory
+    end
+    should "default it's callbacks to it's parents" do
+      assert_equal @structural_class.schema.callbacks, subject.callbacks
     end
   end
 
@@ -211,6 +218,7 @@ class AD::Framework::Schema
       @auxiliary_class = Factory.auxiliary_class do
         attributes :sam_account_name
         must_set :sam_account_name
+        after_destroy :fix_it_all
       end
       @schema.add_auxiliary_class(@auxiliary_class)
     end
@@ -223,25 +231,52 @@ class AD::Framework::Schema
       @auxiliary_class.schema.mandatory.each do |name|
         assert_includes name, subject.mandatory
       end
+      @auxiliary_class.schema.callbacks.each do |timing, actions|
+        assert_instance_of Hash, subject.callbacks[timing]
+
+        actions.each do |action, methods|
+          assert_instance_of Array, subject.callbacks[timing][action]
+
+          methods.each do |method|
+            assert_includes method, subject.callbacks[timing][action]
+          end
+        end
+      end
     end
 
     teardown do
       @schema.auxiliary_classes.clear
     end
   end
-  
+
   class AddMandatoryTest < BaseTest
     desc "adding mandatory attributes"
     setup do
       @attribute_names = [ :display_name ]
       @schema.add_mandatory(@attribute_names)
     end
-    
+
     should "store the attribute in the mandatory set" do
       @attribute_names.each do |attribute_name|
         assert_includes attribute_name, subject.mandatory
       end
-    end    
+    end
+  end
+
+  class AddCallbackTest < BaseTest
+    desc "adding a callback"
+    setup do
+      @timing = :before
+      @action = :create
+      @method_name = "something_amazing"
+      @schema.add_callback(@timing, @action, @method_name)
+    end
+
+    should "store the callback in the callbacks hash" do
+      assert_instance_of Hash, subject.callbacks[@timing]
+      assert_instance_of Array, subject.callbacks[@timing][@action]
+      assert_includes @method_name, subject.callbacks[@timing][@action]
+    end
   end
 
 end

@@ -105,4 +105,110 @@ module AD::Framework::Patterns::HasSchema
     end
   end
 
+  class BeforeCreateTest < ClassMethodsTest
+    desc "adding a before_create callback"
+    setup do
+      @values = [ :do_something_amazing, :another_amazing_thing ]
+      @structural_class.schema.expects(:add_callback).with(:before, :create, @values)
+    end
+
+    should "add callbacks to the schema" do
+      values = @values
+      assert_nothing_raised{ subject.before_create(*values) }
+    end
+  end
+
+  class BeforeUpdateTest < ClassMethodsTest
+    desc "adding a before_update callback"
+    setup do
+      @values = [ :do_something_amazing, :another_amazing_thing ]
+      @structural_class.schema.expects(:add_callback).with(:before, :update, @values)
+    end
+
+    should "add callbacks to the schema" do
+      values = @values
+      assert_nothing_raised{ subject.before_update(*values) }
+    end
+  end
+
+  class BeforeSaveTest < ClassMethodsTest
+    desc "adding a before_save callback"
+    setup do
+      @values = [ :do_something_amazing, :another_amazing_thing ]
+      @structural_class.schema.expects(:add_callback).with(:before, :create, @values)
+      @structural_class.schema.expects(:add_callback).with(:before, :update, @values)
+    end
+
+    should "add callbacks for create and update to the schema" do
+      values = @values
+      assert_nothing_raised{ subject.before_save(*values) }
+    end
+  end
+
+  class BeforeDestroyTest < ClassMethodsTest
+    desc "adding a before_destroy callback"
+    setup do
+      @values = [ :do_something_amazing, :another_amazing_thing ]
+      @structural_class.schema.expects(:add_callback).with(:before, :destroy, @values)
+    end
+
+    should "add callbacks to the schema" do
+      values = @values
+      assert_nothing_raised{ subject.before_destroy(*values) }
+    end
+  end
+  
+  class AfterCreateTest < ClassMethodsTest
+    desc "adding a after_create callback"
+    setup do
+      @values = [ :do_something_amazing, :another_amazing_thing ]
+      @structural_class.schema.expects(:add_callback).with(:after, :create, @values)
+    end
+
+    should "add callbacks to the schema" do
+      values = @values
+      assert_nothing_raised{ subject.after_create(*values) }
+    end
+  end
+
+  class AfterUpdateTest < ClassMethodsTest
+    desc "adding a after_update callback"
+    setup do
+      @values = [ :do_something_amazing, :another_amazing_thing ]
+      @structural_class.schema.expects(:add_callback).with(:after, :update, @values)
+    end
+
+    should "add callbacks to the schema" do
+      values = @values
+      assert_nothing_raised{ subject.after_update(*values) }
+    end
+  end
+
+  class AfterSaveTest < ClassMethodsTest
+    desc "adding a after_save callback"
+    setup do
+      @values = [ :do_something_amazing, :another_amazing_thing ]
+      @structural_class.schema.expects(:add_callback).with(:after, :create, @values)
+      @structural_class.schema.expects(:add_callback).with(:after, :update, @values)
+    end
+
+    should "add callbacks for create and update to the schema" do
+      values = @values
+      assert_nothing_raised{ subject.after_save(*values) }
+    end
+  end
+
+  class AfterDestroyTest < ClassMethodsTest
+    desc "adding a after_destroy callback"
+    setup do
+      @values = [ :do_something_amazing, :another_amazing_thing ]
+      @structural_class.schema.expects(:add_callback).with(:after, :destroy, @values)
+    end
+
+    should "add callbacks to the schema" do
+      values = @values
+      assert_nothing_raised{ subject.after_destroy(*values) }
+    end
+  end
+
 end

@@ -65,6 +65,7 @@ module AD
             self.schema.rdn
           end
 
+          # Attributes methods
           def attributes(*attribute_names)
             self.schema.add_attributes(attribute_names)
           end
@@ -77,8 +78,44 @@ module AD
             self.schema.add_write_attributes(attribute_names)
           end
 
+          # Validation methods
           def must_set(*attribute_names)
             self.schema.add_mandatory(attribute_names)
+          end
+
+          # Callbacks methods
+          def before_create(*method_names)
+            self.schema.add_callback(:before, :create, method_names)
+          end
+
+          def before_update(*method_names)
+            self.schema.add_callback(:before, :update, method_names)
+          end
+
+          def before_save(*method_names)
+            self.before_create(*method_names)
+            self.before_update(*method_names)
+          end
+
+          def before_destroy(*method_names)
+            self.schema.add_callback(:before, :destroy, method_names)
+          end
+
+          def after_create(*method_names)
+            self.schema.add_callback(:after, :create, method_names)
+          end
+
+          def after_update(*method_names)
+            self.schema.add_callback(:after, :update, method_names)
+          end
+
+          def after_save(*method_names)
+            self.after_create(*method_names)
+            self.after_update(*method_names)
+          end
+
+          def after_destroy(*method_names)
+            self.schema.add_callback(:after, :destroy, method_names)
           end
 
         end

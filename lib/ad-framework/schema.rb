@@ -5,13 +5,14 @@ module AD
 
     class Schema
       attr_accessor :ldap_name, :rdn, :attributes, :structural_classes, :auxiliary_classes
-      attr_accessor :mandatory, :klass
+      attr_accessor :mandatory, :klass, :callbacks
 
       def initialize(klass)
         self.klass = klass
 
         self.rdn = :name
         self.auxiliary_classes = []
+        self.callbacks = {}
 
         if self.klass.is_a?(::Class) && self.klass.superclass.respond_to?(:schema)
           self.inherit_from(self.klass.superclass.schema)
@@ -75,9 +76,16 @@ module AD
 
       def add_auxiliary_class(klass)
         self.auxiliary_classes << klass
-        self.attributes.merge(klass.schema.attributes)
-        self.mandatory.merge(klass.schema.mandatory)
+        self.bring_in(klass.schema)
         self.auxiliary_classes.uniq!
+      end
+
+      def add_callback(timing, action, method_names)
+        self.callbacks[timing.to_sym] ||= {}
+        self.callbacks[timing.to_sym][action.to_sym] ||= []
+        method_names.each do |method_name|
+          self.callbacks[timing.to_sym][action.to_sym] << method_name
+        end
       end
 
       def inspect
@@ -98,6 +106,29 @@ module AD
         self.structural_classes = schema.structural_classes.dup
         self.structural_classes << self.klass.superclass
         self.mandatory = schema.mandatory.dup
+        self.callbacks = schema.callbacks.dup
+      end
+
+      def bring_in(schema)
+        self.attributes.merge(schema.attributes)
+        self.mandatory.merge(schema.mandatory)
+        self.callbacks = self.merge_callbacks(self.callbacks, schema.callbacks)
+      end
+
+      def merge_callbacks(main, other)
+        other = other.dup
+        merged = main.inject({}) do |merged, (key, value)|
+          merged[key] = case(value)
+          when Hash
+            self.merge_callbacks(value, other.delete(key))
+          when Array
+            [ value, other[key] ].compact.flatten
+          else
+            other[key]
+          end
+          merged
+        end
+        merged.merge((other || {}))
       end
 
     end

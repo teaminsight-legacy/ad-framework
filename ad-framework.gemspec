@@ -17,9 +17,9 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  #s.add_runtime_dependency "ad-ldap"
+  s.add_runtime_dependency "ad-ldap", "~>0.1.1"
 
   s.add_development_dependency "assert",  "~>0.3.0"
   s.add_development_dependency "log4r",   "~>1.1.9"
-  s.add_development_dependency "mocha",   "=0.9.12"
+  s.add_development_dependency "mocha",   "~>0.9.12"
 end
