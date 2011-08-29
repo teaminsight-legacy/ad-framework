@@ -2,6 +2,5 @@
 .bundle
 Gemfile.lock
 pkg/*
-private/*
 log/*
 coverage/*

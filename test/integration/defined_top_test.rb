@@ -19,20 +19,17 @@ class AD::Top
     setup do
       @ldap_name = "top"
       @rdn = :name
-      @treebase = [ "OU=Stuff", AD::Framework.config.treebase ].join(", ")
       @attrs = [ :name, :system_flags, :display_name, :description ]
       @schema = @structural_class.schema
     end
     subject{ @schema }
 
     should "store the ldap name defined on the class" do
-      assert_equal @ldap_name, subject.ldap_name
+      expected = [ AD::Framework.config.ldap_prefix, @ldap_name ].compact.join
+      assert_equal expected, subject.ldap_name
     end
     should "store the rdn defined on the class" do
       assert_equal @rdn, subject.rdn
-    end
-    should "store the treebase defined on the class" do
-      assert_equal @treebase, subject.treebase
     end
     should "contain all the attributes defined on the class" do
       @attrs.each do |attr|
@@ -63,7 +60,7 @@ class AD::Top
     end
     should "return the name set on it" do
       assert_equal @name, subject.name
-      assert_equal [ @name ], subject.fields[:name]
+      assert_equal [ @name ], subject.fields[:cn]
     end
     should "return the system_flags set on it" do
       assert_equal @system_flags, subject.system_flags
@@ -84,7 +81,7 @@ class AD::Top
     setup do
       @current = @structural_class.schema.treebase
       @structural_class.schema.treebase = nil
-      @top = @structural_class.find("CN=joe test, CN=Users, DC=reelfx, DC=com")
+      @top = @structural_class.find("CN=joe test, #{AD::User.schema.treebase}")
     end
     subject{ @top }
 

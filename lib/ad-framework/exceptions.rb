@@ -6,8 +6,11 @@ module AD
 
     class AttributeTypeNotDefined < StandardError
     end
-    
+
     class ObjectClassNotDefined < StandardError
+    end
+
+    class EntryNotFound < StandardError
     end
 
   end

@@ -5,12 +5,13 @@ class AD::Framework::Utilities::EntryBuilder
   class BaseTest < Assert::Context
     desc "AD::Framework::Utilities::EntryBuilder"
     setup do
-      @class = Class.new(AD::Framework::StructuralClass) do
+      State.preserve
+      @structural_class = Factory.structural_class do
         ldap_name "somethingAmazing"
         attributes :name
       end
-      AD::Framework.register_structural_class(@class)
-      @ldap_entry = { "objectclass" => [ @class.schema.ldap_name ] }
+      AD::Framework.register_structural_class(@structural_class)
+      @ldap_entry = { "objectclass" => [ @structural_class.ldap_name ] }
       @entry_builder = AD::Framework::Utilities::EntryBuilder.new(@ldap_entry)
     end
     subject{ @entry_builder }
@@ -23,7 +24,7 @@ class AD::Framework::Utilities::EntryBuilder
     end
 
     teardown do
-      AD::Framework.defined_object_classes.delete(@class.ldap_name.to_sym)
+      State.restore
     end
   end
 
@@ -32,7 +33,7 @@ class AD::Framework::Utilities::EntryBuilder
     subject{ @entry_builder.entry }
 
     should "be a kind of the class in its object class" do
-      assert_instance_of @class, subject
+      assert_instance_of @structural_class, subject
     end
     should "have set the fields on the entry to its" do
       assert_equal @entry_builder.fields, subject.fields
@@ -64,21 +65,20 @@ class AD::Framework::Utilities::EntryBuilder
   class WithLinkedAuxiliaryClassesTest < BaseTest
     desc "entry builder building a new entry with linked aux classes"
     setup do
-      @auxiliary_class = Module.new do
-        include AD::Framework::AuxiliaryClass
+      @auxiliary_class = Factory.auxiliary_class do
         ldap_name "displayIt"
         attributes :display_name
       end
       AD::Framework.register_auxiliary_class(@auxiliary_class)
-      @ldap_entry = { 
-        "objectclass" => [ @auxiliary_class.schema.ldap_name, @class.schema.ldap_name ]
+      @ldap_entry = {
+        "objectclass" => [ @auxiliary_class.ldap_name, @structural_class.ldap_name ]
       }
       @entry_builder = AD::Framework::Utilities::EntryBuilder.new(@ldap_entry)
     end
     subject{ @entry_builder.entry }
 
     should "be a kind of the class in its object class" do
-      assert_instance_of @class, subject
+      assert_instance_of @structural_class, subject
     end
     should "have set the fields on the entry to its" do
       assert_equal @entry_builder.fields, subject.fields
@@ -87,10 +87,6 @@ class AD::Framework::Utilities::EntryBuilder
       assert_includes @auxiliary_class, subject.schema.auxiliary_classes
       assert_includes :display_name, subject.schema.attributes
       assert_respond_to :display_name, subject
-    end
-    
-    teardown do
-      AD::Framework.defined_object_classes.delete(@auxiliary_class.ldap_name.to_sym)
     end
   end
 

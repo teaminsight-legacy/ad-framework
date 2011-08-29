@@ -7,7 +7,7 @@ module AD
   module Framework
 
     class Config
-      attr_accessor :attributes, :attribute_types, :object_classes
+      attr_accessor :attributes, :attribute_types, :object_classes, :ldap_prefix
 
       def initialize
         self.mappings = AD::Framework::Config::Mapping.new
@@ -16,6 +16,14 @@ module AD
         self.attributes = AD::Framework::Config::Mapping.new
         self.attribute_types = AD::Framework::Config::Mapping.new
         self.object_classes = AD::Framework::Config::Mapping.new
+      end
+
+      def ldap_prefix=(new_value)
+        @ldap_prefix = new_value
+        self.object_classes.dup.each do |key, value|
+          self.object_classes.delete(key)
+          self.object_classes.add("#{@ldap_prefix}#{key}", value)
+        end
       end
 
       def ldap(&block)

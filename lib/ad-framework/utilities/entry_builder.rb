@@ -12,13 +12,15 @@ module AD
 
         def initialize(ldap_entry, options = {})
           self.ldap_entry = ldap_entry
-          self.fields = AD::Framework::Fields.new(self.ldap_entry || {})
-
-          if options[:reload]
-            self.entry = options[:reload]
-            self.reload
-          else
-            self.build
+          
+          if self.ldap_entry
+            self.fields = AD::Framework::Fields.new(self.ldap_entry || {})
+            if options[:reload]
+              self.entry = options[:reload]
+              self.reload
+            else
+              self.build
+            end
           end
         end
 

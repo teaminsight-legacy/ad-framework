@@ -13,14 +13,13 @@ module AD::Framework::AuxiliaryClass
 
   class IncludedTest < BaseTest
     setup_once do
-      RandomAuxiliaryClass = Module.new do
-        include AD::Framework::AuxiliaryClass
-        ldap_name "random_auxiliary_class"
+      RandomAuxiliaryClass = Factory.auxiliary_class do
+        ldap_name "testAuxiliaryClass"
       end
     end
     setup do
       included_module = @included_module = RandomAuxiliaryClass
-      @class = Class.new(AD::Framework::StructuralClass) do
+      @class = Factory.structural_class do
         include included_module
       end
     end
