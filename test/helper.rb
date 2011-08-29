@@ -13,7 +13,7 @@ if RUBY_VERSION =~ /^1.9/
 end
 
 root_path = File.expand_path("../..", __FILE__)
-ldap_config = YAML.load(File.open(File.join(root_path, "test", "ldap.yml")))
+ldap_config = YAML.load(File.open(File.join(root_path, "test", "support", "ldap.yml")))
 
 FileUtils.mkdir_p(File.join(root_path, "log"))
 TEST_LOGGER = Log4r::Logger.new("AD::Framework")
