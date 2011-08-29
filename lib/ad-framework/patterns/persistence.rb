@@ -28,30 +28,24 @@ module AD
             end
           end
           def create
-            #run_callbacks do
-              self.fields[:distinguishedname] = self.dn
-              self.fields[:objectclass] = (self.schema.object_classes.collect do |object_class|
-                object_class.schema.ldap_name
-              end).compact
-              self.connection.add({ :dn => self.dn, :attributes => self.fields.to_hash })
-              self.reload
-            #end
+            self.fields[:distinguishedname] = self.dn
+            self.fields[:objectclass] = (self.schema.object_classes.collect do |object_class|
+              object_class.schema.ldap_name
+            end).compact
+            self.connection.add({ :dn => self.dn, :attributes => self.fields.to_hash })
+            self.reload
           end
           def update
-            # run callbacks do
-              self.connection.open do |c|
-                self.fields.changes.each do |name, value|
-                  c.replace_attribute(self.dn, name, value)
-                end
+            self.connection.open do |c|
+              self.fields.changes.each do |name, value|
+                c.replace_attribute(self.dn, name, value)
               end
-              self.reload
-            # end
+            end
+            self.reload
           end
 
           def destroy
-            #run_callbacks do
-              self.connection.delete(self.dn)
-            #end
+            self.connection.delete(self.dn)
           end
 
         end

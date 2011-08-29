@@ -1,4 +1,5 @@
 require 'ad-framework/fields'
+require 'ad-framework/patterns/callbacks'
 require 'ad-framework/patterns/has_schema'
 require 'ad-framework/patterns/persistence'
 require 'ad-framework/patterns/searchable'
@@ -11,6 +12,7 @@ module AD
       include AD::Framework::Patterns::HasSchema
       include AD::Framework::Patterns::Persistence
       include AD::Framework::Patterns::Searchable
+      include AD::Framework::Patterns::Callbacks
       include AD::Framework::Patterns::Validations
 
       attr_accessor :meta_class, :fields

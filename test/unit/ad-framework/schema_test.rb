@@ -112,9 +112,6 @@ class AD::Framework::Schema
     should "default mandatory to it's parents" do
       assert_equal @structural_class.schema.mandatory, subject.mandatory
     end
-    should "default it's callbacks to it's parents" do
-      assert_equal @structural_class.schema.callbacks, subject.callbacks
-    end
   end
 
   class TreebaseTest < BaseTest
@@ -231,17 +228,6 @@ class AD::Framework::Schema
       @auxiliary_class.schema.mandatory.each do |name|
         assert_includes name, subject.mandatory
       end
-      @auxiliary_class.schema.callbacks.each do |timing, actions|
-        assert_instance_of Hash, subject.callbacks[timing]
-
-        actions.each do |action, methods|
-          assert_instance_of Array, subject.callbacks[timing][action]
-
-          methods.each do |method|
-            assert_includes method, subject.callbacks[timing][action]
-          end
-        end
-      end
     end
 
     teardown do
@@ -273,9 +259,9 @@ class AD::Framework::Schema
     end
 
     should "store the callback in the callbacks hash" do
-      assert_instance_of Hash, subject.callbacks[@timing]
-      assert_instance_of Array, subject.callbacks[@timing][@action]
-      assert_includes @method_name, subject.callbacks[@timing][@action]
+      assert_instance_of Hash, subject.callbacks[@action]
+      assert_instance_of Array, subject.callbacks[@action][@timing]
+      assert_includes @method_name, subject.callbacks[@action][@timing]
     end
   end
 

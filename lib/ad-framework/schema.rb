@@ -81,10 +81,10 @@ module AD
       end
 
       def add_callback(timing, action, method_names)
-        self.callbacks[timing.to_sym] ||= {}
-        self.callbacks[timing.to_sym][action.to_sym] ||= []
+        self.callbacks[action.to_sym] ||= {}
+        self.callbacks[action.to_sym][timing.to_sym] ||= []
         method_names.each do |method_name|
-          self.callbacks[timing.to_sym][action.to_sym] << method_name
+          self.callbacks[action.to_sym][timing.to_sym] << method_name
         end
       end
 
@@ -106,31 +106,12 @@ module AD
         self.structural_classes = schema.structural_classes.dup
         self.structural_classes << self.klass.superclass
         self.mandatory = schema.mandatory.dup
-        self.callbacks = schema.callbacks.dup
       end
 
       def bring_in(schema)
         self.attributes.merge(schema.attributes)
         self.mandatory.merge(schema.mandatory)
-        self.callbacks = self.merge_callbacks(self.callbacks, schema.callbacks)
       end
-
-      def merge_callbacks(main, other)
-        other = other.dup
-        merged = main.inject({}) do |merged, (key, value)|
-          merged[key] = case(value)
-          when Hash
-            self.merge_callbacks(value, other.delete(key))
-          when Array
-            [ value, other[key] ].compact.flatten
-          else
-            other[key]
-          end
-          merged
-        end
-        merged.merge((other || {}))
-      end
-
     end
 
   end
