@@ -1,0 +1,304 @@
+# Attribute Types #############################################################
+
+attributetype ( 1.2.840.113556.1.4.159
+	NAME 'accountExpires'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.1307
+	NAME 'accountNameHistory'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+attributetype ( 1.2.840.113556.1.4.150
+	NAME 'adminCount'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.2.226
+	NAME 'adminDescription'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.2.194
+	NAME 'adminDisplayName'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.652
+ 	NAME 'assistant'
+ 	SYNTAX '1.3.6.1.4.1.1466.115.121.1.12'
+ 	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.49
+	NAME 'badPasswordTime'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.12
+	NAME 'badPwdCount'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.916
+ 	NAME 'canonicalName'
+ 	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+attributetype ( 1.2.840.113556.1.4.156
+	NAME 'comment'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.2.146
+	NAME 'company'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.25
+ 	NAME 'countryCode'
+ 	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+ 	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.2.141
+	NAME 'department'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.261
+	NAME 'division'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.35
+	NAME 'employeeID'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.44
+	NAME 'homeDirectory'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.45
+	NAME 'homeDrive'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.721
+	NAME 'ipPhone'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.52
+	NAME 'lastLogon'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.662
+	NAME 'lockoutTime'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.169
+	NAME 'logonCount'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.76
+	NAME 'maxStorage'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 634.2.1
+	NAME 'middleName'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.146
+	NAME 'objectSid'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.40'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.144
+	NAME 'operatorCount'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.2.277
+	NAME 'otherHomePhone'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+attributetype ( 1.2.840.113556.1.4.722
+	NAME 'otherIpPhone'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+attributetype ( 1.2.840.113556.1.4.647
+	NAME 'otherMobile'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+attributetype ( 1.2.840.113556.1.2.18
+	NAME 'otherTelephone'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+attributetype ( 1.2.840.113556.1.2.118
+	NAME 'otherPager'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+attributetype ( 1.2.840.113556.1.4.139
+	NAME 'profilePath'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.2.210
+ 	NAME 'proxyAddresses'
+ 	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+attributetype ( 1.2.840.113556.1.4.96
+	NAME 'pwdLastSet'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.153
+	NAME 'rid'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.221
+	NAME 'sAMAccountName'
+	EQUALITY caseIgnoreMatch
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.302
+	NAME 'sAMAccountType'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.121
+	NAME 'securityIdentifier'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.40'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.771
+	NAME 'servicePrincipalName'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+attributetype ( 1.2.840.113556.1.4.609
+	NAME 'sIDHistory'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.40' )
+
+attributetype ( 1.2.840.113556.1.4.375
+ 	NAME 'systemFlags'
+ 	EQUALITY integerMatch
+ 	ORDERING integerOrderingMatch
+ 	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+ 	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.1301
+	NAME 'tokenGroups'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.40' )
+
+attributetype ( 1.2.840.113556.1.4.1418
+	NAME 'tokenGroupsGlobalAndUniversal'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.40' )
+
+attributetype ( 1.2.840.113556.1.4.1303
+	NAME 'tokenGroupsNoGCAcceptable'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.40' )
+
+attributetype ( 1.2.840.113556.1.4.90
+	NAME 'unicodePwd'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.40'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.8
+	NAME 'userAccountControl'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.27'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.138
+	NAME 'userParameters'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.4.656
+	NAME 'userPrincipalName'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.15'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.2.3
+	NAME 'whenChanged'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.24'
+	SINGLE-VALUE )
+
+attributetype ( 1.2.840.113556.1.2.2
+	NAME 'whenCreated'
+	SYNTAX '1.3.6.1.4.1.1466.115.121.1.24'
+	SINGLE-VALUE )
+
+###############################################################################
+
+# Object Classes ##############################################################
+
+objectclass ( 634.1.1
+	NAME 'adtest-top'
+	ABSTRACT
+	MUST ( objectClass )
+	MAY (
+	  cn $ description $ distinguishedName $ whenCreated $ whenChanged $ displayName $
+		adminDisplayName $ proxyAddresses $ adminDescription $ systemFlags $ canonicalName
+	)
+ )
+
+objectclass ( 634.1.2
+	NAME 'adtest-container'
+	SUP adtest-top
+	STRUCTURAL
+	MUST ( cn )
+ )
+
+objectclass ( 634.1.3
+ 	NAME 'adtest-person'
+ 	SUP adtest-top
+ 	ABSTRACT
+ 	MUST ( cn )
+ 	MAY ( sn $ telephoneNumber $ userPassword )
+ )
+
+objectclass ( 634.1.4
+	NAME 'adtest-organizationalPerson'
+	SUP adtest-person
+	ABSTRACT
+	MAY (
+	  streetAddress $ homePostalAddress $ assistant $ company $ countryCode $ c $ department $
+	  division $ mail $ employeeID $ facsimileTelephoneNumber $ generationQualifier $ givenName $
+	  houseIdentifier $ initials $ l $ manager $ ou $ o $ otherMailbox $ middleName $ personalTitle $
+	  otherHomePhone $ homePhone $ otherIpPhone $ ipPhone $ otherMobile $ mobile $ otherTelephone $
+	  otherPager $ pager $ physicalDeliveryOfficeName $ postalAddress $ postalCode $ postOfficeBox $
+	  st $ street $ co $ title $ comment
+	)
+ )
+
+objectclass ( 634.1.5
+	NAME 'adtest-user'
+	SUP adtest-organizationalPerson
+	STRUCTURAL
+	MAY (
+	  accountExpires $ adminCount $ badPasswordTime $ badPwdCount $ mail $ employeeNumber $
+	  employeeType $ givenName $ homeDirectory $ homeDrive $ initials $ lastLogon $ lockoutTime $
+    logonCount $ maxStorage $ operatorCount $ profilePath $ pwdLastSet $ roomNumber $
+    servicePrincipalName $ unicodePwd $ userAccountControl $ userParameters $ userPrincipalName
+  )
+ )
+
+objectclass ( 634.1.6
+ 	NAME 'adtest-securityPrincipal'
+ 	SUP adtest-top
+ 	AUXILIARY
+ 	MUST ( objectSid $ sAMAccountName )
+ 	MAY (
+ 	  accountNameHistory $ sAMAccountType $ rid $ securityIdentifier $ sIDHistory $ tokenGroups $
+ 	  tokenGroupsGlobalAndUniversal $ tokenGroupsNoGCAcceptable
+  )
+ )
+
+###############################################################################
