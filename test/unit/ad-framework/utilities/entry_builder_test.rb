@@ -70,7 +70,7 @@ class AD::Framework::Utilities::EntryBuilder
         attributes :display_name
       end
       AD::Framework.register_auxiliary_class(@auxiliary_class)
-      @ldap_entry = { 
+      @ldap_entry = {
         "objectclass" => [ @auxiliary_class.schema.ldap_name, @class.schema.ldap_name ]
       }
       @entry_builder = AD::Framework::Utilities::EntryBuilder.new(@ldap_entry)
@@ -88,7 +88,7 @@ class AD::Framework::Utilities::EntryBuilder
       assert_includes :display_name, subject.schema.attributes
       assert_respond_to :display_name, subject
     end
-    
+
     teardown do
       AD::Framework.defined_object_classes.delete(@auxiliary_class.ldap_name.to_sym)
     end

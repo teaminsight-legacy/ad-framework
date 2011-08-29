@@ -5,10 +5,13 @@ class AD::Framework::Schema
   class BaseTest < Assert::Context
     desc "AD::Framework::Schema"
     setup do
-      @class = Class.new(AD::Framework::StructuralClass) do
+      State.preserve
+      load("test/support/schema/attribute_types.rb")
+      load("test/support/schema/attributes.rb")
+      @structural_class = Factory.structural_class do
         attributes :name
       end
-      @schema = AD::Framework::Schema.new(@class)
+      @schema = AD::Framework::Schema.new(@structural_class)
     end
     subject{ @schema }
 
@@ -31,52 +34,73 @@ class AD::Framework::Schema
       assert_instance_of Set, subject.attributes
       assert_empty subject.attributes
     end
-    should "use the ldap_prefix with ldap_name if set" do
-      current_ad_ldap_config = AD::LDAP.instance_variable_get("@config")
-      current_config = AD::Framework.instance_variable_get("@config")
-      AD::Framework.instance_variable_set("@config", nil)
-      AD::LDAP.instance_variable_set("@config", nil)
-      ldap_name = "amazing"
-      subject.ldap_name = ldap_name
-      prefix = "something-"
-      expected = "#{prefix}#{ldap_name}"
 
-      AD::Framework.config.ldap_prefix = prefix
-      assert_equal expected, subject.ldap_name
-      AD::Framework.config.ldap_prefix = nil
-      assert_equal ldap_name, subject.ldap_name
-
-      AD::Framework.instance_variable_set("@config", current_config)
-      AD::LDAP.instance_variable_set("@config", current_ad_ldap_config)
+    teardown do
+      State.restore
     end
-    should "return all its object classes in the correct order with a call to #object_classes" do
-      structural_classes = [ "structural_class" ]
-      subject.structural_classes += structural_classes
-      auxiliary_classes = [ "auxiliary_class" ]
-      subject.auxiliary_classes += auxiliary_classes
-      
-      expected = [ subject.structural_classes, subject.klass, subject.auxiliary_classes ].flatten
+  end
+
+  class LdapNameWithPrefixTest < BaseTest
+    desc "ldap_name method with an ldap prefix set"
+    setup do
+      @ldap_prefix = "something-"
+      @ldap_name = "amazing"
+      AD::Framework.config.ldap_prefix = @ldap_prefix
+      @schema.ldap_name = @ldap_name
+    end
+
+    should "use the ldap_prefix with ldap_name" do
+      assert_equal [ @ldap_prefix, @ldap_name ].join, subject.ldap_name
+    end
+  end
+
+  class LdapNameWithoutPrefixTest < LdapNameWithPrefixTest
+    desc "ldap_name method without ldap prefix set"
+    setup do
+      AD::Framework.config.ldap_prefix = nil
+    end
+
+    should "just be the ldap name" do
+      assert_equal @ldap_name, subject.ldap_name
+    end
+  end
+
+  class ObjectClassesTest < BaseTest
+    desc "object_classes method"
+    setup do
+      @structural_classes = [ "structural" ]
+      @auxiliary_classes = [ "auxiliary" ]
+      @schema.structural_classes = @structural_classes
+      @schema.auxiliary_classes = @auxiliary_classes
+    end
+
+    should "return all its object classes in the correct order" do
+      expected = [
+        subject.structural_classes,
+        subject.klass,
+        subject.auxiliary_classes
+      ].flatten
       assert_equal expected, subject.object_classes
     end
   end
 
-  class WithASuperclassSchema < BaseTest
+  class WithASuperclassSchemaTest < BaseTest
     desc "with a superclass schema"
     setup do
-      @child = Class.new(@class)
-      @schema = AD::Framework::Schema.new(@child)
+      @child_class = Class.new(@structural_class)
+      @schema = AD::Framework::Schema.new(@child_class)
     end
     subject{ @schema }
 
     should "default attributes to it's parent schema's attributes" do
-      assert_equal @class.schema.attributes, subject.attributes
+      assert_equal @structural_class.schema.attributes, subject.attributes
     end
     should "default structural classes to an array with its parent" do
       assert_instance_of Array, subject.structural_classes
-      @class.schema.structural_classes.each do |object_class|
+      @structural_class.schema.structural_classes.each do |object_class|
         assert_includes object_class, subject.structural_classes
       end
-      assert_includes @class, subject.structural_classes
+      assert_includes @structural_class, subject.structural_classes
     end
   end
 
@@ -86,21 +110,8 @@ class AD::Framework::Schema
       @schema.treebase = nil
     end
 
-    should "default the treebase to what ever is configured" do
+    should "default the treebase to what is configured" do
       assert_equal AD::Framework.config.treebase, subject.treebase
-    end
-    should "contact the treebase with what is configured, if it is not included" do
-      partial = "CN=Incomplete"
-      expected = "#{partial}, #{AD::Framework.config.treebase}"
-      subject.treebase = partial
-
-      assert_equal expected, subject.treebase
-    end
-    should "use the full treebase if it is provided" do
-      expected = "CN=Complete, #{AD::Framework.config.treebase}"
-      subject.treebase = expected
-
-      assert_equal expected, subject.treebase
     end
 
     teardown do
@@ -108,36 +119,35 @@ class AD::Framework::Schema
     end
   end
 
-  class AddAttributesTest < BaseTest
+  class WithPartialTreebaseTest < TreebaseTest
+    desc "with a partial treebase set"
+    setup do
+      @treebase = "CN=Incomplete"
+      @schema.treebase = @treebase
+    end
+
+    should "contact the treebase with what is configured, if it is not included" do
+      expected = [ @treebase, AD::Framework.config.treebase ].compact.join(", ")
+      assert_equal expected, subject.treebase
+    end
+  end
+
+  class WithFullTreebaseTest < TreebaseTest
+    desc "with a full treebase set"
+    setup do
+      @treebase = [ "CN=Complete", AD::Framework.config.treebase ].compact.join(", ")
+      @schema.treebase = @treebase
+    end
+
+    should "return the full treebase" do
+      assert_equal @treebase, subject.treebase
+    end
+  end
+
+  class AttributesMethodTest < BaseTest
     desc "adding attribute methods"
     setup do
       @schema.attributes.clear
-    end
-
-    should "call add read and write attributes with a call to #add_attributes" do
-      names = [ :name, :display_name, :system_flags ]
-      subject.expects(:add_read_attributes).with(names)
-      subject.expects(:add_write_attributes).with(names)
-
-      assert_nothing_raised do
-        subject.add_attributes(names)
-      end
-    end
-    should "define the reader and then store it's symbol with a call to #add_read_attributes" do
-      names = [ :display_name ]
-      subject.add_read_attributes(names)
-
-      assert_respond_to :display_name_attribute_type, @class.new
-      assert_respond_to :display_name, @class.new
-      assert_includes :display_name, subject.attributes
-    end
-    should "define the writer and then store it's symbol with a call to #add_write_attributes" do
-      names = [ :description ]
-      subject.add_read_attributes(names)
-
-      assert_respond_to :description_attribute_type, @class.new
-      assert_respond_to :description, @class.new
-      assert_includes :description, subject.attributes
     end
 
     teardown do
@@ -145,19 +155,60 @@ class AD::Framework::Schema
     end
   end
 
+  class AddAttributesTest < AttributesMethodTest
+    desc "with the add_attributes method"
+    setup do
+      @attribute_names = [ :name, :display_name, :system_flags ]
+      @schema.expects(:add_read_attributes).with(@attribute_names)
+      @schema.expects(:add_write_attributes).with(@attribute_names)
+    end
+
+    should "call add read and write attributes" do
+      assert_nothing_raised{ subject.add_attributes(@attribute_names) }
+    end
+  end
+
+  class AddReadAttributesTest < AttributesMethodTest
+    desc "with the add_read_attributes method"
+    setup do
+      @attribute_names = [ :display_name ]
+      @schema.add_read_attributes(@attribute_names)
+      @instance = @structural_class.new
+    end
+
+    should "define the reader and then be stored" do
+      assert_respond_to :display_name_attribute_type, @instance
+      assert_respond_to :display_name, @instance
+      assert_includes :display_name, subject.attributes
+    end
+  end
+
+  class AddWriteAttributesTest < AttributesMethodTest
+    desc "with the add_write_attributes method"
+    setup do
+      @attribute_names = [ :description ]
+      @schema.add_read_attributes(@attribute_names)
+      @instance = @structural_class.new
+    end
+
+    should "define the reader and then be stored" do
+      assert_respond_to :description_attribute_type, @instance
+      assert_respond_to :description, @instance
+      assert_includes :description, subject.attributes
+    end
+  end
+
   class AddAuxiliaryClassesTest < BaseTest
     desc "adding auxiliary classes"
     setup do
       @schema.auxiliary_classes.clear
-      @auxiliary_class = Module.new do
-        include AD::Framework::AuxiliaryClass
+      @auxiliary_class = Factory.auxiliary_class do
         attributes :sam_account_name
       end
+      @schema.add_auxiliary_class(@auxiliary_class)
     end
 
     should "merge the auxiliary classes attributes and store it" do
-      subject.add_auxiliary_class(@auxiliary_class)
-
       assert_includes @auxiliary_class, subject.auxiliary_classes
       @auxiliary_class.schema.attributes.each do |name|
         assert_includes name, subject.attributes

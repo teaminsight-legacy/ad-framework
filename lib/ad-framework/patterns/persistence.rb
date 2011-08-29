@@ -1,4 +1,3 @@
-# TODO: test this
 module AD
   module Framework
     module Patterns
@@ -17,9 +16,15 @@ module AD
 
         module InstanceMethods
 
+          def new_entry?
+            !(self.fields[:distinguishedname] || self.fields[:dn])
+          end
+
           def save
             if self.new_entry?
-              #TODO
+              self.create
+            else
+              self.update
             end
           end
           def create
@@ -34,9 +39,17 @@ module AD
             #end
           end
           def update
-            #TODO
+            # run validations
+            # run callbacks do
+              self.connection.open do |c|
+                self.fields.changes.each do |name, value|
+                  c.replace_attribute(self.dn, name, value)
+                end
+              end
+              self.reload
+            # end
           end
-          
+
           def destroy
             #run_callbacks do
               self.connection.delete(self.dn)
@@ -50,6 +63,7 @@ module AD
           def create(args = {})
             entry = self.new(args)
             entry.create
+            entry
           end
 
         end

@@ -5,6 +5,7 @@ module AD
 
       def initialize(ldap_entry)
         super()
+        @changed_keys = Set.new
         (ldap_entry || {}).each do |ldap_name, value|
           self[ldap_name.to_s] = value
         end
@@ -13,10 +14,17 @@ module AD
       def [](lookup)
         super(lookup.to_s)
       end
-      def []=(lookup, object)
-        super(lookup.to_s, object)
+      def []=(lookup, value)
+        if self[lookup] != value
+          @changed_keys << lookup.to_s
+        end
+        super(lookup.to_s, value)
       end
-      
+
+      def changes
+        @changed_keys.inject({}){|h, k| h.merge({ k => self[k] }) }
+      end
+
       def to_hash
         self.inject({}){|h, (k,v)| h.merge({ k => v }) }
       end

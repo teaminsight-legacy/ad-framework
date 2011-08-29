@@ -30,10 +30,13 @@ if !$LOAD_PATH.include?(root_path)
 end
 require 'ad-framework'
 
-require 'test/support/attributes'
-require 'test/support/attribute_types'
-require 'test/support/auxiliary_classes'
-require 'test/support/structural_classes'
+require 'test/support/schema/attributes'
+require 'test/support/schema/attribute_types'
+require 'test/support/schema/auxiliary_classes'
+require 'test/support/schema/structural_classes'
+
+require 'test/support/state'
+require 'test/support/factory'
 require 'test/support/seed'
 
 class Assert::Context

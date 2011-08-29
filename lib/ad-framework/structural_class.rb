@@ -8,7 +8,7 @@ module AD
 
     class StructuralClass
       include AD::Framework::Patterns::HasSchema
-      include AD::Framework::Patterns::Persistence # TODO test that this is included
+      include AD::Framework::Patterns::Persistence
       include AD::Framework::Patterns::Searchable
 
       attr_accessor :meta_class, :errors, :fields
@@ -17,7 +17,6 @@ module AD
         self.meta_class = class << self; self; end
 
         self.fields = AD::Framework::Fields.new(attributes.delete(:fields) || {})
-        # TODO: test this
         if (treebase = (attributes.delete(:treebase) || attributes.delete("treebase")))
           self.treebase = treebase
         end
@@ -26,7 +25,6 @@ module AD
         self.errors = {}
       end
 
-      # TODO: test this
       def treebase
         self.schema.treebase
       end
@@ -41,8 +39,9 @@ module AD
       def inspect
         (attr_display = self.attributes.collect do |(name, value)|
           "#{name}: #{value.inspect}"
-        end).sort
-        [ "#<#{self.class} ", attr_display.join(", "), ">" ].join
+        end)
+        attr_display << "treebase: #{self.treebase.inspect}"
+        [ "#<#{self.class} ", attr_display.sort.join(", "), ">" ].join
       end
 
       class << self

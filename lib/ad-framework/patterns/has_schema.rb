@@ -24,7 +24,9 @@ module AD
 
           def dn
             dn = self.fields[:distinguishedname] || self.fields[:dn]
-            dn ||= [ "CN=#{self.send(self.schema.rdn)}", self.schema.treebase ].join(", ")
+            dn ||= if self.respond_to?(self.schema.rdn)
+              [ "CN=#{self.send(self.schema.rdn)}", self.schema.treebase ].join(", ")
+            end
           end
 
           def attributes

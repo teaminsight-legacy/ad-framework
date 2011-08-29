@@ -5,12 +5,7 @@ module AD::Framework
   class BaseTest < Assert::Context
     desc "the AD::Framework module"
     setup do
-      @previous_config = AD::Framework.config.dup
-      @previous_ad_ldap_config = AD::LDAP.config.dup
-      AD::Framework.instance_variable_set("@config", nil)
-      AD::LDAP.instance_variable_set("@logger", nil)
-      AD::LDAP.instance_variable_set("@adapter", nil)
-      AD::LDAP.instance_variable_set("@config", nil)
+      State.preserve
       @module = AD::Framework
     end
     subject{ @module }
@@ -20,17 +15,7 @@ module AD::Framework
     should have_instance_methods :register_attribute_type, :defined_object_classes
     should have_instance_methods :register_structural_class, :register_auxiliary_class
 
-    should "yield the config with a call to configure" do
-      yielded = nil
-      subject.configure{|config| yielded = config }
-
-      assert_equal subject.config, yielded
-    end
-    should "return the config with a call to configure with no block" do
-      assert_equal subject.config, subject.configure
-    end
-
-    should "return an instance of AD::Framework::Config with a call to #config" do
+    should "return an instance of AD::Framework::Config with #config" do
       assert_instance_of AD::Framework::Config, subject.config
     end
     should "return the config's adapter with #connection" do
@@ -46,50 +31,85 @@ module AD::Framework
       assert_equal subject.config.object_classes, subject.defined_object_classes
     end
 
-    should "store attributes with a call to #register_attributes" do
-      definition = { :name => "super_name", :ldap_name => "supersupername", :type => "string" }
-
-      subject.register_attributes([ definition ])
-      stored = subject.defined_attributes[:super_name]
-
-      assert_equal definition[:name], stored.name
-      assert_equal definition[:ldap_name], stored.ldap_name
-      assert_equal definition[:type], stored.type
-    end
-
-    should "store an attribute type with a call to #register_attribute_type" do
-      attribute_type = mock()
-      attribute_type.stubs(:key).returns("super_attribute_type")
-
-      subject.register_attribute_type(attribute_type)
-      stored = subject.defined_attribute_types[attribute_type.key]
-
-      assert_equal attribute_type, stored
-    end
-
-    should "store a structural class with a call to #register_structural_class" do
-      structural_class = mock()
-      structural_class.stubs(:ldap_name).returns("super_structural_class")
-
-      subject.register_structural_class(structural_class)
-      stored = subject.defined_object_classes[structural_class.ldap_name]
-
-      assert_equal structural_class, stored
-    end
-
-    should "store an auxiliary class with a call to #register_auxiliary_class" do
-      auxiliary_class = mock()
-      auxiliary_class.stubs(:ldap_name).returns("super_auxiliary_class")
-
-      subject.register_auxiliary_class(auxiliary_class)
-      stored = subject.defined_object_classes[auxiliary_class.ldap_name]
-
-      assert_equal auxiliary_class, stored
-    end
-
     teardown do
-      AD::Framework.instance_variable_set("@config", @previous_config)
-      AD::LDAP.instance_variable_set("@config", @previous_ad_ldap_config)
+      State.restore
+    end
+  end
+
+  class ConfigureTest < BaseTest
+    desc "configure method"
+    setup do
+      yielded = nil
+      @module.configure{|config| yielded = config }
+      @yielded = yielded
+    end
+
+    should "yield the config" do
+      assert_equal subject.config, @yielded
+    end
+    should "return the config with no block" do
+      assert_equal subject.config, subject.configure
+    end
+  end
+
+  class RegisterAttributesTest < BaseTest
+    desc "register_attributes method"
+    setup do
+      @definition = { :name => "super_name", :ldap_name => "supersupername", :type => "string" }
+      @module.register_attributes([ @definition ])
+      @stored = @module.defined_attributes[:super_name]
+    end
+    subject{ @stored }
+
+    should "store attributes" do
+      assert_equal @definition[:name], subject.name
+      assert_equal @definition[:ldap_name], subject.ldap_name
+      assert_equal @definition[:type], subject.type
+    end
+  end
+
+  class RegisterAttributeTypeTest < BaseTest
+    desc "register_attribute_type method"
+    setup do
+      @attribute_type = mock()
+      @attribute_type.stubs(:key).returns("super_attribute_type")
+      @module.register_attribute_type(@attribute_type)
+      @stored = @module.defined_attribute_types[@attribute_type.key]
+    end
+    subject{ @stored }
+
+    should "store an attribute type" do
+      assert_equal @attribute_type, subject
+    end
+  end
+
+  class RegisterStructuralClassTest < BaseTest
+    desc "register_structural_class method"
+    setup do
+      @structural_class = mock()
+      @structural_class.stubs(:ldap_name).returns("super_structural_class")
+      @module.register_structural_class(@structural_class)
+      @stored = @module.defined_object_classes[@structural_class.ldap_name]
+    end
+    subject{ @stored }
+
+    should "store a structural class" do
+      assert_equal @structural_class, @stored
+    end
+  end
+
+  class RegisterAuxiliaryClassTest < BaseTest
+    desc "register_auxiliary_class method"
+    setup do
+      @auxiliary_class = mock()
+      @auxiliary_class.stubs(:ldap_name).returns("super_auxiliary_class")
+      @module.register_auxiliary_class(@auxiliary_class)
+      @stored = @module.defined_object_classes[@auxiliary_class.ldap_name]
+    end
+    subject{ @stored }
+
+    should "store an auxiliary class" do
+      assert_equal @auxiliary_class, subject
     end
   end
 
