@@ -210,6 +210,7 @@ class AD::Framework::Schema
       @schema.auxiliary_classes.clear
       @auxiliary_class = Factory.auxiliary_class do
         attributes :sam_account_name
+        must_set :sam_account_name
       end
       @schema.add_auxiliary_class(@auxiliary_class)
     end
@@ -218,6 +219,9 @@ class AD::Framework::Schema
       assert_includes @auxiliary_class, subject.auxiliary_classes
       @auxiliary_class.schema.attributes.each do |name|
         assert_includes name, subject.attributes
+      end
+      @auxiliary_class.schema.mandatory.each do |name|
+        assert_includes name, subject.mandatory
       end
     end
 

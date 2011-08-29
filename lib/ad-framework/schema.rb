@@ -76,6 +76,7 @@ module AD
       def add_auxiliary_class(klass)
         self.auxiliary_classes << klass
         self.attributes.merge(klass.schema.attributes)
+        self.mandatory.merge(klass.schema.mandatory)
         self.auxiliary_classes.uniq!
       end
 
