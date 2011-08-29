@@ -15,7 +15,7 @@ module AD::Framework::Patterns::HasSchema
 
     should have_instance_methods :schema, :dn, :attributes, :attributes=
     should have_class_methods :schema, :ldap_name, :treebase, :rdn, :attributes
-    should have_class_methods :read_attributes, :write_attributes
+    should have_class_methods :read_attributes, :write_attributes, :must_set
 
     should "return it's class's schema wtih a call to #schema" do
       assert_equal subject.class.schema.klass, subject.schema.klass

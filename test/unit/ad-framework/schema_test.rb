@@ -8,13 +8,14 @@ class AD::Framework::Schema
       State.preserve
       @structural_class = Factory.structural_class do
         attributes :name
+        must_set :name
       end
       @schema = AD::Framework::Schema.new(@structural_class)
     end
     subject{ @schema }
 
     should have_accessors :ldap_name, :rdn, :attributes, :auxiliary_classes, :klass
-    should have_accessors :structural_classes
+    should have_accessors :structural_classes, :mandatory
     should have_instance_methods :treebase, :treebase=, :add_attributes, :add_read_attributes
     should have_instance_methods :add_write_attributes, :add_auxiliary_class
 
@@ -31,6 +32,10 @@ class AD::Framework::Schema
     should "default attributes to a new set" do
       assert_instance_of Set, subject.attributes
       assert_empty subject.attributes
+    end
+    should "default mandatory to a new set" do
+      assert_instance_of Set, subject.mandatory
+      assert_empty subject.mandatory
     end
 
     teardown do
@@ -99,6 +104,9 @@ class AD::Framework::Schema
         assert_includes object_class, subject.structural_classes
       end
       assert_includes @structural_class, subject.structural_classes
+    end
+    should "default mandatory to it's parents" do
+      assert_equal @structural_class.schema.mandatory, subject.mandatory
     end
   end
 
@@ -216,6 +224,20 @@ class AD::Framework::Schema
     teardown do
       @schema.auxiliary_classes.clear
     end
+  end
+  
+  class AddMandatoryTest < BaseTest
+    desc "adding mandatory attributes"
+    setup do
+      @attribute_names = [ :display_name ]
+      @schema.add_mandatory(@attribute_names)
+    end
+    
+    should "store the attribute in the mandatory set" do
+      @attribute_names.each do |attribute_name|
+        assert_includes attribute_name, subject.mandatory
+      end
+    end    
   end
 
 end

@@ -5,6 +5,8 @@ module AD
     rdn :name
     attributes :name, :system_flags, :display_name, :description
 
+    must_set :name
+
   end
 end
 AD::Framework.register_structural_class(AD::Top)

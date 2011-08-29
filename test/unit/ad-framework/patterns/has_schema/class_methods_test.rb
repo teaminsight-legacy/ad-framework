@@ -73,7 +73,7 @@ module AD::Framework::Patterns::HasSchema
       @structural_class.schema.expects(:add_read_attributes).with(@values)
     end
 
-    should "add read attributes to the schema with a call to #read_attributes" do
+    should "add read attributes to the schema" do
       values = @values
       assert_nothing_raised{ subject.read_attributes(*values) }
     end
@@ -86,9 +86,22 @@ module AD::Framework::Patterns::HasSchema
       @structural_class.schema.expects(:add_write_attributes).with(@values)
     end
 
-    should "add write attributes to the schema with a call to #write_attributes" do
+    should "add write attributes to the schema" do
       values = @values
       assert_nothing_raised{ subject.write_attributes(*values) }
+    end
+  end
+
+  class SetMustSetTest < ClassMethodsTest
+    desc "setting mandatory attributes"
+    setup do
+      @values = [ :name ]
+      @structural_class.schema.expects(:add_mandatory).with(@values)
+    end
+
+    should "add mandatory attributes to the schema" do
+      values = @values
+      assert_nothing_raised{ subject.must_set(*values) }
     end
   end
 

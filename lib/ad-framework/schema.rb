@@ -5,7 +5,7 @@ module AD
 
     class Schema
       attr_accessor :ldap_name, :rdn, :attributes, :structural_classes, :auxiliary_classes
-      attr_accessor :klass
+      attr_accessor :mandatory, :klass
 
       def initialize(klass)
         self.klass = klass
@@ -14,12 +14,10 @@ module AD
         self.auxiliary_classes = []
 
         if self.klass.is_a?(::Class) && self.klass.superclass.respond_to?(:schema)
-          parent_schema = self.klass.superclass.schema
-          self.attributes = parent_schema.attributes.dup
-          self.structural_classes = parent_schema.structural_classes.dup
-          self.structural_classes << self.klass.superclass
+          self.inherit_from(self.klass.superclass.schema)
         else
           self.attributes = Set.new
+          self.mandatory = Set.new
           self.structural_classes = []
         end
       end
@@ -62,6 +60,12 @@ module AD
         end
       end
 
+      def add_mandatory(attribute_names)
+        attribute_names.each do |attribute_name|
+          self.mandatory << attribute_name
+        end
+      end
+
       def object_classes
         [ self.structural_classes.to_a,
           self.klass,
@@ -86,6 +90,13 @@ module AD
 
       def default_treebase
         AD::Framework.config.treebase
+      end
+
+      def inherit_from(schema)
+        self.attributes = schema.attributes.dup
+        self.structural_classes = schema.structural_classes.dup
+        self.structural_classes << self.klass.superclass
+        self.mandatory = schema.mandatory.dup
       end
 
     end

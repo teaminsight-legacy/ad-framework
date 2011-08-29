@@ -77,6 +77,10 @@ module AD
             self.schema.add_write_attributes(attribute_names)
           end
 
+          def must_set(*attribute_names)
+            self.schema.add_mandatory(attribute_names)
+          end
+
         end
 
       end
