@@ -32,6 +32,10 @@ module AD
       def reset
         self.value = self.value_from_field
       end
+      
+      def is_set?
+        !self.value.nil?
+      end
 
       def inspect
         attr_display = [ :value, :ldap_value, :attr_ldap_name ].collect do |attr|

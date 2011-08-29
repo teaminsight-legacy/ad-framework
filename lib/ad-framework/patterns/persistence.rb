@@ -28,7 +28,6 @@ module AD
             end
           end
           def create
-            #run_validations!
             #run_callbacks do
               self.fields[:distinguishedname] = self.dn
               self.fields[:objectclass] = (self.schema.object_classes.collect do |object_class|
@@ -39,7 +38,6 @@ module AD
             #end
           end
           def update
-            # run validations
             # run callbacks do
               self.connection.open do |c|
                 self.fields.changes.each do |name, value|

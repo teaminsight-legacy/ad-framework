@@ -2,6 +2,7 @@ require 'ad-framework/fields'
 require 'ad-framework/patterns/has_schema'
 require 'ad-framework/patterns/persistence'
 require 'ad-framework/patterns/searchable'
+require 'ad-framework/patterns/validations'
 
 module AD
   module Framework
@@ -10,8 +11,9 @@ module AD
       include AD::Framework::Patterns::HasSchema
       include AD::Framework::Patterns::Persistence
       include AD::Framework::Patterns::Searchable
+      include AD::Framework::Patterns::Validations
 
-      attr_accessor :meta_class, :errors, :fields
+      attr_accessor :meta_class, :fields
 
       def initialize(attributes = {})
         self.meta_class = class << self; self; end
@@ -22,7 +24,6 @@ module AD
         end
 
         self.attributes = attributes
-        self.errors = {}
       end
 
       def treebase

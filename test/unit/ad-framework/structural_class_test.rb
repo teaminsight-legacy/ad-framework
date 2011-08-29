@@ -10,7 +10,7 @@ class AD::Framework::StructuralClass
     end
     subject{ @instance }
 
-    should have_accessors :meta_class, :errors, :fields
+    should have_accessors :meta_class, :fields
     should have_instance_methods :connection, :treebase, :treebase=
     should have_class_methods :connection
 
@@ -23,11 +23,10 @@ class AD::Framework::StructuralClass
     should have_instance_methods :create, :update, :save, :destroy
     should have_class_methods :create
 
+    should have_instance_methods :errors, :valid?
+
     should "set fields to an instance of AD::Framework::Fields" do
       assert_instance_of AD::Framework::Fields, subject.fields
-    end
-    should "set errors to an instance of a Hash" do
-      assert_instance_of Hash, subject.errors
     end
     should "return the framework's connection with a call to #connection" do
       assert_equal AD::Framework.connection, subject.class.connection

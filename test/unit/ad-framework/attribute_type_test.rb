@@ -14,7 +14,7 @@ class AD::Framework::AttributeType
     subject{ @attribute_type }
 
     should have_accessors :object, :attr_ldap_name, :value, :ldap_value
-    should have_instance_methods :value_from_field, :inspect
+    should have_instance_methods :value_from_field, :is_set?, :inspect
     should have_class_methods :key, :define_attribute_type, :attribute_type_method
     should have_class_methods :define_reader, :reader_method, :define_writer, :writer_method
 
@@ -77,18 +77,37 @@ class AD::Framework::AttributeType
       assert_equal [ @ldap_value ], subject.object.fields[subject.attr_ldap_name]
     end
   end
-  
+
   class SetLdapValueWithArrayTest < BaseTest
     desc "setting the ldap value with an array"
     setup do
       @ldap_value = [ 1, "2" ]
       @attribute_type.ldap_value = @ldap_value
     end
-    
+
     should "convert all objects to strings for object's fields with a call to #ldap_value=" do
       assert_equal @ldap_value, subject.ldap_value
       expected = @ldap_value.collect(&:to_s)
       assert_equal expected, subject.object.fields[subject.attr_ldap_name]
+    end
+  end
+
+  class IsSetTest < SetValueTest
+    desc "is_set with a non-nil value"
+
+    should "return true" do
+      assert subject.is_set?
+    end
+  end
+
+  class IsNotSetTest < BaseTest
+    desc "is_set with a nil value"
+    setup do
+      @attribute_type.value = nil
+    end
+
+    should "return false" do
+      assert_not subject.is_set?
     end
   end
 
