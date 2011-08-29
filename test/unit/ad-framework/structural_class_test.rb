@@ -39,13 +39,12 @@ class AD::Framework::StructuralClass
     desc "a structural class"
     setup do
       @treebase = "CN=somewhere"
-      @structural_class = Class.new(AD::Framework::StructuralClass) do
+      @structural_class = Factory.structural_class do
         ldap_name "something"
         rdn :name
-        def name; "something"; end
+        attributes :name
       end
       @instance = @structural_class.new({ :treebase => @treebase })
-      @instance.schema.attributes << :name
     end
     subject{ @instance }
 

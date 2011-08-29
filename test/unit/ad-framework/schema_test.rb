@@ -6,8 +6,6 @@ class AD::Framework::Schema
     desc "AD::Framework::Schema"
     setup do
       State.preserve
-      load("test/support/schema/attribute_types.rb")
-      load("test/support/schema/attributes.rb")
       @structural_class = Factory.structural_class do
         attributes :name
       end
